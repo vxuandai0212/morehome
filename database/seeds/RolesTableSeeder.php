@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Role;
 
 class RolesTableSeeder extends Seeder
 {
@@ -12,7 +13,7 @@ class RolesTableSeeder extends Seeder
      */
     public function run()
     {
-        $roles = array('superadmin', 'admin', 'subcriber');
+        $roles = array('Superadmin', 'Admin', 'Subcriber');
         foreach($roles as $role)
         {
             DB::table('roles')->insert([

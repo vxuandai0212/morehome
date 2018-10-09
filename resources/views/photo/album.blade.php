@@ -3,43 +3,79 @@
 @section('css')
 <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
 <style>
-  .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
-  .avatar {
-    width: 178px;
-    height: 178px;
-    display: block;
-  }
+.v-modal {
+    z-index: -1!important;
+}
+.container {
+    margin-bottom: 15px;
+}
+.avatar-upload {
+  position: relative;
+  max-width: 80%;
+  margin: auto;
+}
+.avatar-upload .avatar-edit {
+  position: absolute;
+  right: 12px;
+  z-index: 1;
+  top: 10px;
+}
+.avatar-upload .avatar-edit input {
+  display: none;
+}
+.avatar-upload .avatar-edit input + label {
+  display: inline-block;
+  width: 34px;
+  height: 34px;
+  margin-bottom: 0;
+  border-radius: 100%;
+  background: #FFFFFF;
+  border: 1px solid transparent;
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  font-weight: normal;
+  transition: all 0.2s ease-in-out;
+}
+.avatar-upload .avatar-edit input + label:hover {
+  background: #f1f1f1;
+  border-color: #d6d6d6;
+}
+.avatar-upload .avatar-edit input + label:after {
+  content: "";
+  font-family: "FontAwesome";
+  color: #757575;
+  position: absolute;
+  top: 5px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  margin: auto;
+}
+.avatar-upload .avatar-preview {
+  height: 192px;
+  position: relative;
+  border: 6px solid #F8F8F8;
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
+}
+.avatar-upload .avatar-preview > div {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
 </style>
 @endsection
 
 @section('content')
         <div class="breadcrumbs">
-            <div class="col-sm-4">
-                <div class="page-header float-left">
-                    <div class="page-title">
-                        <ol class="breadcrumb text-right">
-                            <li><a href="#">Photo</a></li>
-                            <li><a href="#">Album</a></li>
-                            <li class="active">Beautiful Kitchen</li>
-                        </ol>
-                    </div>
+            <div class="page-header float-left">
+                <div class="page-title">
+                    <ol class="breadcrumb text-right">
+                        <li><a href="{{ route('admin.photo') }}">Photo</a></li>
+                        <li><a>Album</a></li>
+                        <li class="active">Beautiful Kitchen</li>
+                    </ol>
                 </div>
             </div>
         </div>
@@ -74,28 +110,28 @@
                             </el-form-item>
                         </el-form>
                         <hr>
-                        <el-table :data="tableData" stripe border style="width: 100%">
-                            <el-table-column prop="name" width="100" align="center">
+                        <el-table :data="album.photos" stripe border style="width: 100%">
+                            <el-table-column width="100" align="center">
                                 <template slot-scope="scope">
-                                    <img alt="avatar" src="{{ asset('images/avatar/1.jpg') }}">
+                                    <img alt="avatar" :src="scope.row.image_url">
                                 </template>
                             </el-table-column>
                             <el-table-column prop="name" label="Title"></el-table-column>
-                            <el-table-column prop="username" label="Views"></el-table-column>
-                            <el-table-column prop="role" label="Category" width="120" align="center"></el-table-column>
-                            <el-table-column prop="role" label="Tag" width="120" align="center"></el-table-column>
-                            <el-table-column prop="role" label="Author" width="120" align="center"></el-table-column>
-                            <el-table-column prop="activities_log" label="Publish Time" width="120" align="center"></el-table-column>
-                            <el-table-column prop="status" label="Status" width="120" align="center"></el-table-column>
-                            <el-table-column prop="action" label="Action" width="180" align="center">
+                            <el-table-column prop="view_count" label="Views" width="80" align="center"></el-table-column>
+                            <el-table-column prop="categories" label="Category" width="120" align="center"></el-table-column>
+                            <el-table-column prop="tags" label="Tag" width="120" align="center"></el-table-column>
+                            <el-table-column prop="created_by" label="Author" width="120" align="center"></el-table-column>
+                            <el-table-column prop="created_at_carbon" label="Publish Time" width="120" align="center"></el-table-column>
+                            <el-table-column prop="status" label="Status" width="100" align="center"></el-table-column>
+                            <el-table-column label="Action" width="150" align="center">
                                 <template slot-scope="scope">
                                     <el-button
                                     size="mini"
-                                    @click="dialogViewVisible = true">View</el-button>
+                                    @click="viewPhoto(scope.$index, scope.row)">View</el-button>
                                     <el-button
                                     size="mini"
                                     type="primary"
-                                    @click="dialogEditVisible = true">Edit</el-button>
+                                    @click="editPhoto(scope.$index, scope.row)">Edit</el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -103,119 +139,151 @@
                         <el-pagination
                             @size-change="handleSizeChange"
                             @current-change="handleCurrentChange"
-                            :page-sizes="[100, 200, 300, 400]"
-                            :page-size="100"
+                            :page-sizes="[10, 15, 20, 100]"
+                            :page-size="page_size"
                             layout="total, sizes, prev, pager, next"
-                            :total="400">
+                            :total="total">
                         </el-pagination>
                         <!-- View image -->
                         <el-dialog :visible.sync="dialogViewVisible">
-                            <img alt="avatar" src="{{ asset('images/avatar/1.jpg') }}">
+                            <img alt="avatar" :src="view_image">
                         </el-dialog>
                         <!-- Form Add-->
                         <el-dialog :visible.sync="dialogAddVisible">
-                            <el-form :model="form">
-                                <el-form-item label="Title">
-                                    <el-input v-model="form.name"></el-input>
-                                </el-form-item>
-                                <el-form-item label="Category">
-                                    <el-select v-model="form.category" placeholder="Choose category">
-                                        <el-option label="Default" value="default"></el-option>
-                                        <el-option label="News" value="news"></el-option>
-                                    </el-select>
-                                </el-form-item>
-                                <el-form-item label="Tags">
-                                    <el-select
-                                        v-model="form.tag"
-                                        multiple
-                                        filterable
-                                        allow-create
-                                        default-first-option
-                                        placeholder="Choose tags for your article"
-                                        style="width: 50%;">
-                                        <el-option
-                                        v-for="item in options5"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.value"
-                                        >
-                                        </el-option>
-                                    </el-select>
-                                </el-form-item>
-                                <el-form-item label="Status:">
-                                    <el-select v-model="form.status">
-                                        <el-option label="Visible" value="visible"></el-option>
-                                        <el-option label="Hide" value="hide"></el-option>
-                                    </el-select>
-                                </el-form-item>
-                                <el-form-item>
-                                    <el-upload
-                                        class="avatar-uploader"
-                                        action="https://jsonplaceholder.typicode.com/posts/"
-                                        :show-file-list="false"
-                                        :on-success="handleAvatarSuccess"
-                                        :before-upload="beforeAvatarUpload">
-                                        <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                                    </el-upload>
-                                </el-form-item>
-                            </el-form>
+                            <el-row>
+                                <div class="container">
+                                    <div class="avatar-upload">
+                                        <div class="avatar-edit">
+                                            <input type='file' id="imageUpload" @change="onImageChange" accept=".png, .jpg, .jpeg" />
+                                            <label for="imageUpload"></label>
+                                        </div>
+                                        <div class="avatar-preview">
+                                            <div id="imagePreview" style="background-image: url(/images/album/default.png);">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </el-row>
+                            <el-row>
+                                <el-form :label-position="labelPosition">
+                                    <el-form-item label="Title">
+                                        <el-input v-model="form_photo.name"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="Category">
+                                        <el-select
+                                            v-model="form_photo.categories"
+                                            multiple
+                                            filterable
+                                            allow-create
+                                            default-first-option
+                                            placeholder="Choose categories for your photo">
+                                            <el-option
+                                                v-for="category in categories"
+                                                :key="category.id"
+                                                :label="category.name"
+                                                :value="category.id">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                    <el-form-item label="Tags">
+                                        <el-select
+                                            v-model="form_photo.tags"
+                                            multiple
+                                            filterable
+                                            allow-create
+                                            default-first-option
+                                            placeholder="Choose tags for your photo">
+                                            <el-option
+                                                v-for="tag in tags"
+                                                :key="tag.id"
+                                                :label="tag.name"
+                                                :value="tag.id">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                    <el-form-item label="Status:">
+                                        <el-select v-model="form_photo.status">
+                                            <el-option label="Active" value="1"></el-option>
+                                            <el-option label="Disable" value="0"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                    <el-form-item>
+                                        
+                                    </el-form-item>
+                                </el-form>
+                            </el-row>
                             <span slot="footer" class="dialog-footer">
                                 <el-button @click="dialogAddVisible = false">Close</el-button>
-                                <el-button type="primary" @click="dialogAddVisible = false">Add</el-button>
+                                <el-button type="primary" @click="addPhoto">Add</el-button>
                             </span>
                         </el-dialog>
+
                         <!-- Form Edit-->
                         <el-dialog :visible.sync="dialogEditVisible">
-                            <el-form :model="form">
-                                <el-form-item label="Title">
-                                    <el-input v-model="form.name"></el-input>
-                                </el-form-item>
-                                <el-form-item label="Category">
-                                    <el-select v-model="form.category" placeholder="Choose category">
-                                        <el-option label="Default" value="default"></el-option>
-                                        <el-option label="News" value="news"></el-option>
-                                    </el-select>
-                                </el-form-item>
-                                <el-form-item label="Tags">
-                                    <el-select
-                                        v-model="form.tag"
-                                        multiple
-                                        filterable
-                                        allow-create
-                                        default-first-option
-                                        placeholder="Choose tags for your article"
-                                        style="width: 50%;">
-                                        <el-option
-                                        v-for="item in options5"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.value"
-                                        >
-                                        </el-option>
-                                    </el-select>
-                                </el-form-item>
-                                <el-form-item label="Status:">
-                                    <el-select v-model="form.status">
-                                        <el-option label="Visible" value="visible"></el-option>
-                                        <el-option label="Hide" value="hide"></el-option>
-                                    </el-select>
-                                </el-form-item>
-                                <el-form-item>
-                                    <el-upload
-                                        class="avatar-uploader"
-                                        action="https://jsonplaceholder.typicode.com/posts/"
-                                        :show-file-list="false"
-                                        :on-success="handleAvatarSuccess"
-                                        :before-upload="beforeAvatarUpload">
-                                        <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                                    </el-upload>
-                                </el-form-item>
-                            </el-form>
+                            <el-row>
+                                <div class="container">
+                                    <div class="avatar-upload">
+                                        <div class="avatar-edit">
+                                            <input type='file' id="imageEditUpload" @change="onImageEditChange" accept=".png, .jpg, .jpeg" />
+                                            <label for="imageEditUpload"></label>
+                                        </div>
+                                        <div class="avatar-preview">
+                                            <div id="imageEditPreview" :style="{backgroundImage: 'url(' + edit_photo.image_url + ')'}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </el-row>
+                            <el-row>
+                                <el-form :label-position="labelPosition">
+                                    <el-form-item label="Title">
+                                        <el-input v-model="edit_photo.name"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="Category">
+                                        <el-select 
+                                            v-model="edit_photo.categories" 
+                                            multiple
+                                            filterable
+                                            allow-create
+                                            placeholder="Choose category">
+                                            <el-option
+                                                v-for="category in categories"
+                                                :key="category.id"
+                                                :label="category.name"
+                                                :value="category.id">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                    <el-form-item label="Tags">
+                                        <el-select
+                                            v-model="edit_photo.tags"
+                                            multiple
+                                            filterable
+                                            allow-create
+                                            default-first-option
+                                            placeholder="Choose tags for your article"
+                                            style="width: 50%;">
+                                            <el-option
+                                            v-for="tag in tags"
+                                            :key="tag.id"
+                                            :label="tag.name"
+                                            :value="tag.id"
+                                            >
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                    <el-form-item label="Status:">
+                                        <el-select v-model="edit_photo.status">
+                                            <el-option label="Active" value="1"></el-option>
+                                            <el-option label="Disable" value="0"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-form>
+                            </el-row>
                             <span slot="footer" class="dialog-footer">
                                 <el-button type="danger" @click="handleDelete()">Delete</el-button>
-                                <el-button type="primary" @click="dialogEditVisible = false">Update</el-button>
+                                <el-button type="default" @click="dialogEditVisible = false">Close</el-button>
+                                <el-button type="primary" @click="update">Update</el-button>
                             </span>
                         </el-dialog>
                     </div>
@@ -230,6 +298,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
 <script src="{{ asset('assets/js/plugins.js') }}"></script>
 <script src="{{ asset('assets/js/main.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
 <script src="https://unpkg.com/element-ui/lib/index.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.4.7/locale/en.js"></script>
@@ -242,65 +311,60 @@
       el: '#app',
       data: function() {
         return {
-            tableData: [{
-            date: '2016-05-03',
-            name: 'Tom',
-            state: 'California',
-            city: 'Los Angeles',
-            address: 'No. 189, Grove St, Los Angeles',
-            zip: 'CA 90036',
-            tag: 'Home'
-            }, {
-            date: '2016-05-02',
-            name: 'Tom',
-            state: 'California',
-            city: 'Los Angeles',
-            address: 'No. 189, Grove St, Los Angeles',
-            zip: 'CA 90036',
-            tag: 'Office'
-            }, {
-            date: '2016-05-04',
-            name: 'Tom',
-            state: 'California',
-            city: 'Los Angeles',
-            address: 'No. 189, Grove St, Los Angeles',
-            zip: 'CA 90036',
-            tag: 'Home'
-            }, {
-            date: '2016-05-01',
-            name: 'Tom',
-            state: 'California',
-            city: 'Los Angeles',
-            address: 'No. 189, Grove St, Los Angeles',
-            zip: 'CA 90036',
-            tag: 'Office'
-            }],
+            labelPosition: 'top',
+            album: {
+                photos: []
+            },
+            tags: [],
+            categories: [],
+            form_photo: {
+                album_id: {{$album->id}},
+                name: '',
+                status: null,
+                tags: [],
+                categories: []
+            },
+            image: '',
             formInline: {
-                user: '',
-                region: 'all'
+                region: null,
             },
             dialogViewVisible: false,
-            imageUrl: '',
             dialogAddVisible: false,
             dialogEditVisible: false,
-            form: {
+            page_size: 10,
+            total: null,
+            view_image: '',
+            edit_photo: {
+                id: null,
                 name: '',
-                category: '',
-                tag: '',
-                status: ''
+                categories: '',
+                tags: '',
+                status: null,
+                image_url: ''
             },
-            options5: [{
-                value: 'HTML',
-                label: 'HTML'
-                }, {
-                value: 'CSS',
-                label: 'CSS'
-                }, {
-                value: 'JavaScript',
-                label: 'JavaScript'
-            }],
-            value10: []
+            edit_image: ''
         }
+      },
+      created: function() {
+        var com = this;
+
+        axios.get('/api/categories')
+        .then(function (response) {
+            com.categories = response.data;
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+        axios.get('/api/tags')
+        .then(function (response) {
+            com.tags = response.data;
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+        this.table_change();
       },
       methods: {
         indexMethod(index) {
@@ -312,22 +376,110 @@
         handleCurrentChange(val) {
             console.log(`current page: ${val}`);
         },
-        handleAvatarSuccess(res, file) {
-            this.imageUrl = URL.createObjectURL(file.raw);
+        table_change() {
+            var com = this;
+            axios.get('/api/photos', {params: {limit: 10, offset: 0, album_id: com.form_photo.album_id}})
+            .then(function (response) {
+                // console.log(response.data[0]);
+                var photos = response.data[0];
+                photos = photos.map(function(photo) {
+                    photo.categories = photo.categories.map(function(category) {
+                        return category.name;
+                    }).join(", ");
+                    photo.tags = photo.tags.map(function(tag) {
+                        return tag.name;
+                    }).join(", ");
+                    return photo
+                })
+                com.album.photos = photos;
+                com.total = response.data[1];
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
         },
-        beforeAvatarUpload(file) {
-            const isJPG = file.type === 'image/jpeg';
-            const isLt2M = file.size / 1024 / 1024 < 2;
-
-            if (!isJPG) {
-            this.$message.error('Avatar picture must be JPG format!');
-            }
-            if (!isLt2M) {
-            this.$message.error('Avatar picture size can not exceed 2MB!');
-            }
-            return isJPG && isLt2M;
+        onImageChange(e) {
+            let files = e.target.files || e.dataTransfer.files;
+            if (!files.length)
+                return;
+            this.createImage(files[0]);
+        },
+        createImage(file) {
+            let reader = new FileReader();
+            let vm = this;
+            reader.onload = (e) => {
+                vm.image = e.target.result;
+                $('#imagePreview').css('background-image', 'url('+e.target.result +')');
+                $('#imagePreview').hide();
+                $('#imagePreview').fadeIn(650);
+            };
+            reader.readAsDataURL(file);
+        },
+        onImageEditChange(e) {
+            let files = e.target.files || e.dataTransfer.files;
+            if (!files.length)
+                return;
+            this.createEditImage(files[0]);
+        },
+        createEditImage(file) {
+            let reader = new FileReader();
+            let vm = this;
+            reader.onload = (e) => {
+                vm.edit_image = e.target.result;
+                $('#imageEditPreview').css('background-image', 'url('+e.target.result +')');
+                $('#imageEditPreview').hide();
+                $('#imageEditPreview').fadeIn(650);
+            };
+            reader.readAsDataURL(file);
+        },
+        addPhoto() {
+            var com = this;
+            axios.post('/api/photos', {photo: com.form_photo, image: com.image})
+            .then(function (response) {
+                com.$notify({
+                    title: 'Success',
+                    message: 'Successful add photo to album',
+                    type: 'success'
+                });
+                setTimeout(function(){
+                    location.reload();
+                },2000)
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+        viewPhoto(index, row) {
+            this.dialogViewVisible = true;
+            this.view_image = row.image_url;
+        },
+        editPhoto(index, row) {
+            this.dialogEditVisible = true;
+            this.edit_photo.name = row.name;
+            this.edit_photo.status = row.status;
+            this.edit_photo.categories = row.categories.split(", ");
+            this.edit_photo.tags = row.tags.split(", ");
+            this.edit_photo.image_url = row.image_url;
+            this.edit_photo.id = row.id;
+        },
+        update() {
+            var com = this;
+            axios.put(`/api/photos/${com.edit_photo.id}`, {photo: com.edit_photo, image: com.edit_image})
+            .then(function (response) {
+                com.$notify({
+                    title: 'Success',
+                    message: 'Successful update photo',
+                    type: 'success'
+                });
+                com.dialogEditVisible = false;
+                com.table_change();
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
         },
         handleDelete() {
+            var com = this;
             swal({
                 title: "Are you sure?",
                 text: "Once deleted, you will not be able to recover this image!",
@@ -337,9 +489,20 @@
             })
             .then((willDelete) => {
                 if (willDelete) {
-                    swal("Poof! Your image has been deleted!", {
-                    icon: "success",
-                });
+                    axios.delete(`/api/photos/${com.edit_photo.id}`)
+                    .then(function (response) {
+                        swal("Poof! Your image has been deleted!", {
+                            icon: "success",
+                        });
+                        com.dialogEditVisible = false;
+                        com.table_change();
+                    })
+                    .catch(function (error) {
+                        this.$notify.error({
+                            title: 'Error',
+                            message: error.message
+                        });
+                    });
                 } else {
                     swal("Your image is safe!");
                 }
@@ -348,4 +511,5 @@
       }
     })
 </script>
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 @endsection

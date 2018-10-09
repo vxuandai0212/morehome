@@ -10,7 +10,7 @@
                 <div class="page-header float-left">
                     <div class="page-title">
                         <ol class="breadcrumb text-right">
-                            <li><a href="#">Users</a></li>
+                            <li><a href="{{ route('admin.user') }}">Users</a></li>
                             <li class="active">Add User</li>
                         </ol>
                     </div>
@@ -60,7 +60,7 @@
                                 </el-checkbox-group>
                             </el-form-item>
                             <el-form-item>
-                                <el-button>Back</el-button>
+                                <el-button @click="go_users()">Back</el-button>
                                 <el-button type="primary" @click="onSubmit">Save</el-button>
                             </el-form-item>
                         </el-form>
@@ -103,6 +103,9 @@
       methods: {
         onSubmit() {
             console.log('submit!');
+        },
+        go_users() {
+            window.location.href = `/users`;
         }
       }
     })

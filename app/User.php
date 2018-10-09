@@ -5,10 +5,12 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Cviebrock\EloquentSluggable\Sluggable;
 
 class User extends Authenticatable
 {
     use Notifiable;
+    use Sluggable;
 
     /**
      * The attributes that are mass assignable.
@@ -27,8 +29,9 @@ class User extends Authenticatable
         'avatar_url',
         'address',
         'role_id',
-        'phone_number',
+        'phonenumber',
         'created_by',
+        'slug',
         'status'
     ];
 
@@ -40,4 +43,18 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function role()
+    {
+        return $this->belongsTo('App\Role');
+    }
+
+    public function sluggable()
+    {
+        return [
+            'slug' => [
+                'source' => 'username'
+            ]
+        ];
+    }
 }

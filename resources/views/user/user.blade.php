@@ -1,7 +1,9 @@
 @extends('../layouts.master')
 
 @section('css')
+<!-- element_ui_css -->
 <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+<!-- end_element_ui_css -->
 @endsection
 
 @section('content')
@@ -19,8 +21,8 @@
             <div class="animated fadeIn">
                 <div class="card">
                     <div class="card-header">
-                        <el-button type="primary">Manage Role</el-button>
-                        <el-button type="primary">Add User</el-button>
+                        <el-button type="primary" @click="go_manage_role()">Manage Role</el-button>
+                        <el-button type="primary" @click="go_add_user()">Add User</el-button>
                     </div>
                     <div class="card-body">
                         <el-form :inline="true" :model="formInline" class="demo-form-inline">
@@ -49,16 +51,16 @@
                             </el-form-item>
                         </el-form>
                         <hr>
-                        <el-table :data="tableData" stripe border style="width: 100%">
+                        <el-table :data="users" stripe border style="width: 100%">
                             <el-table-column type="index" :index="indexMethod" width="50" align="center"></el-table-column>
                             <el-table-column prop="name" label="Name"></el-table-column>
                             <el-table-column prop="username" label="Username"></el-table-column>
-                            <el-table-column prop="role" label="Role" width="120" align="center"></el-table-column>
+                            <el-table-column prop="role.name" label="Role" width="120" align="center"></el-table-column>
                             <el-table-column prop="activities_log" label="Activities log" width="120" align="center">
                                 <template slot-scope="scope">
                                     <el-button
                                     size="mini"
-                                    @click="handleEdit(scope.$index, scope.row)">View</el-button>
+                                    @click="viewActivityLog(scope.$index, scope.row)">View</el-button>
                                 </template>
                             </el-table-column>
                             <el-table-column prop="status" label="Status" width="120" align="center"></el-table-column>
@@ -66,11 +68,11 @@
                                 <template slot-scope="scope">
                                     <el-button
                                     size="mini"
-                                    @click="handleEdit(scope.$index, scope.row)">View</el-button>
+                                    @click="viewUserProfile(scope.$index, scope.row)">View</el-button>
                                     <el-button
                                     size="mini"
                                     type="primary"
-                                    @click="handleDelete(scope.$index, scope.row)">Edit</el-button>
+                                    @click="editUserProfile(scope.$index, scope.row)">Edit</el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -78,10 +80,10 @@
                         <el-pagination
                             @size-change="handleSizeChange"
                             @current-change="handleCurrentChange"
-                            :page-sizes="[100, 200, 300, 400]"
-                            :page-size="100"
+                            :page-sizes="[10, 15, 20, 100]"
+                            :page-size="page_size"
                             layout="total, sizes, prev, pager, next"
-                            :total="400">
+                            :total="total">
                         </el-pagination>
                     </div>
                 </div>
@@ -95,6 +97,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
 <script src="{{ asset('assets/js/plugins.js') }}"></script>
 <script src="{{ asset('assets/js/main.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
 <script src="https://unpkg.com/element-ui/lib/index.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.4.7/locale/en.js"></script>
@@ -104,56 +107,58 @@
 <script>
     var app = new Vue({
       el: '#app',
+      mounted: function() {
+        this.table_change();
+      },
       data: function() {
         return {
-            tableData: [{
-            date: '2016-05-03',
-            name: 'Tom',
-            state: 'California',
-            city: 'Los Angeles',
-            address: 'No. 189, Grove St, Los Angeles',
-            zip: 'CA 90036',
-            tag: 'Home'
-            }, {
-            date: '2016-05-02',
-            name: 'Tom',
-            state: 'California',
-            city: 'Los Angeles',
-            address: 'No. 189, Grove St, Los Angeles',
-            zip: 'CA 90036',
-            tag: 'Office'
-            }, {
-            date: '2016-05-04',
-            name: 'Tom',
-            state: 'California',
-            city: 'Los Angeles',
-            address: 'No. 189, Grove St, Los Angeles',
-            zip: 'CA 90036',
-            tag: 'Home'
-            }, {
-            date: '2016-05-01',
-            name: 'Tom',
-            state: 'California',
-            city: 'Los Angeles',
-            address: 'No. 189, Grove St, Los Angeles',
-            zip: 'CA 90036',
-            tag: 'Office'
-            }],
+            users: [],
             formInline: {
                 user: '',
                 region: ''
-            }
+            },
+            current_page: 1,
+            page_size: 10,
+            total: null
         }
       },
       methods: {
         indexMethod(index) {
-            return index * 2;
+            return parseInt(index) + 1;
         },
         handleSizeChange(val) {
-            console.log(`${val} items per page`);
+            this.page_size = val;
+            this.table_change();
         },
         handleCurrentChange(val) {
-            console.log(`current page: ${val}`);
+            this.current_page = val;
+            this.table_change();
+        },
+        table_change() {
+            var com = this;
+            axios.get('api/users', {params: {limit: com.page_size, offset: com.page_size * (com.current_page - 1)}})
+            .then(function (response) {
+                com.users = response.data[0];
+                com.total = response.data[1];
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+        viewActivityLog(index, row) {
+            window.location.href = `/users/activities-log/${row.slug}`;
+        },
+        viewUserProfile(index, row) {
+            window.location.href = `/users/profiles/${row.slug}`;
+        },
+        editUserProfile(index, row) {
+            window.location.href = `/users/profiles/${row.slug}/edit`;
+        },
+        go_manage_role() {
+            window.location.href = `/users/manage-role`;
+        },
+        go_add_user() {
+            window.location.href = `/users/add`;
         }
       }
     })

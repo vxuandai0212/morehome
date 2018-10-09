@@ -10,7 +10,7 @@
                 <div class="page-header float-left">
                     <div class="page-title">
                         <ol class="breadcrumb text-right">
-                            <li><a href="#">Users</a></li>
+                            <li><a href="{{ route('admin.user') }}">Users</a></li>
                             <li class="active">Manage Role</li>
                         </ol>
                     </div>
@@ -34,7 +34,7 @@
                                     </el-form-item>
                                 </el-form>
                             </div>
-                            <div><el-button type="primary">Add Role</el-button></div>
+                            <div><el-button type="primary" @click="go_add_role()">Add Role</el-button></div>
                         </div>
                     </div>
                     <div class="card-body">
@@ -163,6 +163,9 @@
       methods: {
         onSubmit() {
             console.log('submit!');
+        },
+        go_add_role() {
+            window.location.href = `/users/manage-role/add-role`;
         }
       }
     })

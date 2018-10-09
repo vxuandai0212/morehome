@@ -10,8 +10,8 @@
                 <div class="page-header float-left">
                     <div class="page-title">
                         <ol class="breadcrumb text-right">
-                            <li><a href="#">Users</a></li>
-                            <li><a href="#">Activities Log</a></li>
+                            <li><a href="{{ route('admin.user') }}">Users</a></li>
+                            <li><a>Activities Log</a></li>
                             <li class="active">Sơn</li>
                         </ol>
                     </div>

@@ -1,7 +1,20 @@
 @extends('../layouts.master')
 
 @section('css')
+<!-- element_ui_css -->
 <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+<!-- end_element_ui_css -->
+
+<!-- summernote_css -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-lite.css" rel="stylesheet">
+<style>
+.note-editor.note-frame .note-editing-area .note-editable {
+    width: 85%;
+    margin: auto;
+    overflow: visible!important;
+}
+</style>
+<!-- end_summernote_css -->
 @endsection
 
 @section('content')
@@ -97,6 +110,7 @@
                                     </template>
                                 </el-menu-item>
                             </el-menu>
+                            <div id="summernote"></div>
                         </div>
                         <div class="col-md-8">
                             <div class="card">
@@ -114,6 +128,11 @@
                                         <el-form-item label="Keywords">
                                             <el-input type="textarea" v-model="form.desc"></el-input>
                                         </el-form-item>
+                                        <div id="summernote_wrapper">
+                                            <el-form-item label="Content">
+                                                <el-input type="textarea"></el-input>
+                                            </el-form-item>
+                                        </div>
                                         <el-form-item label="Tags">
                                             <el-select
                                                 v-model="value10"
@@ -176,6 +195,12 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
 <script src="{{ asset('assets/js/plugins.js') }}"></script>
 <script src="{{ asset('assets/js/main.js') }}"></script>
+
+<!-- start_summer -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-lite.js"></script>
+<!-- end_summer -->
+
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
 <script src="https://unpkg.com/element-ui/lib/index.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.4.7/locale/en.js"></script>
@@ -249,5 +274,13 @@
         }
       }
     })
+</script>
+
+<script>
+      $('#summernote_wrapper textarea').summernote({
+        placeholder: 'Type something...',
+        tabsize: 2,
+        height: 100
+      });
 </script>
 @endsection

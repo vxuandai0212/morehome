@@ -1,5 +1,11 @@
 @extends('layouts.master')
 
+@section('css')
+<link rel="stylesheet" href="{{ asset('assets/css/cs-skin-elastic.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/normalize.css') }}">
+<link href="{{ asset('assets/css/lib/vector-map/jqvmap.min.css') }}" rel="stylesheet">
+@endsection
+
 @section('content')
         <div class="breadcrumbs">
             <div class="col-sm-4">

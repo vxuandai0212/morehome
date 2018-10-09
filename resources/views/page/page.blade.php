@@ -40,7 +40,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex flex-row-reverse">
-                            <div class="p-2"><el-button type="primary">Add Page</el-button></div>
+                            <div class="p-2"><el-button type="primary" @click="go_add_page()">Add Page</el-button></div>
                         </div>
                     </div>
                     <div class="card-body">
@@ -117,9 +117,10 @@
                         <div class="col-md-8">
                             <div class="card">
                                 <div class="card-body">
-                                    <h2>GHẾ BAR TOLIX</h2>
-                                    <h3>Created: <span>22/02/2016 by Tú Morehome</span></h3>
-                                    <el-form ref="form" :model="form" label-width="120px">
+                                    <h4>GHẾ BAR TOLIX</h4>
+                                    <h6>Created: 22/02/2016 by Tú Morehome</h6>
+                                    <hr>
+                                    <el-form ref="form" :model="form" label-width="130px">
                                         <el-form-item label="Status:">
                                             <el-select v-model="value" placeholder="please select your zone">
                                                 <el-option label="Visible" value="visible"></el-option>
@@ -162,12 +163,18 @@
                                                 <el-option label="TIN TỨC" value="tintuc"></el-option>
                                             </el-select>
                                         </el-form-item>
-                                        <el-form-item label="Display in Menu">
-                                            <el-switch v-model="form.delivery"></el-switch>
-                                        </el-form-item>
-                                        <el-form-item label="Enable Scheduling">
-                                            <el-switch v-model="form.delivery"></el-switch>
-                                        </el-form-item>
+                                        <div class="row">
+                                            <div class="col-md-6 float-left">
+                                                <el-form-item label="Display in Menu">
+                                                    <el-switch v-model="form.delivery"></el-switch>
+                                                </el-form-item>
+                                            </div>
+                                            <div class="col-md-6 float-right">
+                                                <el-form-item label="Enable Scheduling">
+                                                    <el-switch v-model="form.delivery"></el-switch>
+                                                </el-form-item>
+                                            </div>
+                                        </div>
                                         <el-form-item>
                                             <el-button type="danger" @click="onSubmit">Delete</el-button>
                                             <el-button>Cancel</el-button>
@@ -192,6 +199,10 @@
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
 <script src="https://unpkg.com/element-ui/lib/index.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.4.7/locale/en.js"></script>
+
+<script src="https://cloud.tinymce.com/stable/tinymce.min.js"></script>
+<script>tinymce.init({ selector:'textarea' });</script>
+
 <script>
     ELEMENT.locale(ELEMENT.lang.en)
 </script>
@@ -257,6 +268,9 @@
             }
             this.inputVisible = false;
             this.inputValue = '';
+        },
+        go_add_page() {
+            window.location.href = "/pages/add-page";
         }
       }
     })

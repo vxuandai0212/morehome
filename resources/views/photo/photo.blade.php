@@ -2,15 +2,18 @@
 
 @section('css')
 <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+<style>
+.v-modal {
+    z-index: -1!important;
+}
+</style>
 @endsection
 
 @section('content')
         <div class="breadcrumbs">
-            <div class="col-sm-4">
-                <div class="page-header float-left">
-                    <div class="page-title">
-                        <h1>Manage Photo Albums</h1>
-                    </div>
+            <div class="page-header float-left">
+                <div class="page-title">
+                    <h1>Manage Photo Albums</h1>
                 </div>
             </div>
         </div>
@@ -41,22 +44,23 @@
                             </el-form-item>
                         </el-form>
                         <hr>
-                        <el-table :data="tableData" stripe border style="width: 100%">
+                        <el-table :data="albums" stripe border style="width: 100%">
                             <el-table-column type="index" :index="indexMethod" width="50" align="center"></el-table-column>
                             <el-table-column prop="name" label="Title"></el-table-column>
-                            <el-table-column prop="username" label="Views"></el-table-column>
-                            <el-table-column prop="role" label="Author" width="120" align="center"></el-table-column>
-                            <el-table-column prop="activities_log" label="Publish Time" width="120" align="center"></el-table-column>
+                            <el-table-column prop="view_count" label="Views" width="120" align="center"></el-table-column>
+                            <el-table-column prop="created_by" label="Author" width="150" align="center"></el-table-column>
+                            <el-table-column prop="created_at_carbon" label="Publish Time" width="120" align="center"></el-table-column>
                             <el-table-column prop="status" label="Status" width="120" align="center"></el-table-column>
                             <el-table-column prop="action" label="Action" width="180" align="center">
                                 <template slot-scope="scope">
                                     <el-button
                                     size="mini"
+                                    @click="viewAlbum(scope.$index, scope.row)"
                                     >View</el-button>
                                     <el-button
                                     size="mini"
                                     type="primary"
-                                    @click="handleEdit(scope.$index, scope.row)"
+                                    @click="editAlbum(scope.$index, scope.row)"
                                     >Edit</el-button>
                                 </template>
                             </el-table-column>
@@ -65,40 +69,45 @@
                         <el-pagination
                             @size-change="handleSizeChange"
                             @current-change="handleCurrentChange"
-                            :page-sizes="[100, 200, 300, 400]"
-                            :page-size="100"
+                            :page-sizes="[10, 15, 20, 100]"
+                            :page-size="page_size"
                             layout="total, sizes, prev, pager, next"
-                            :total="400">
+                            :total="total">
                         </el-pagination>
+
                         <!-- Form Add-->
                         <el-dialog title="Add an album" :visible.sync="dialogAddVisible">
-                            <el-form :model="form">
+                            <el-form>
                                 <el-form-item label="Title" :label-width="formLabelWidth">
-                                    <el-input v-model="form.name" autocomplete="off"></el-input>
+                                    <el-input v-model="form_add.title" autocomplete="off"></el-input>
                                 </el-form-item>
                             </el-form>
                             <span slot="footer" class="dialog-footer">
                                 <el-button @click="dialogAddVisible = false">Close</el-button>
-                                <el-button type="primary" @click="dialogAddVisible = false">Add</el-button>
+                                <el-button type="primary" @click="addAlbum">Add</el-button>
                             </span>
                         </el-dialog>
                         <!-- Form Edit-->
-                        <el-dialog title="Beautiful kitchen" :visible.sync="dialogFormVisible">
-                            <el-form :model="form">
+                        <el-dialog title="Beautiful kitchen" :visible.sync="dialogEditVisible">
+                            <el-form>
                                 <el-form-item label="Title" :label-width="formLabelWidth">
-                                    <el-input v-model="form.name" autocomplete="off"></el-input>
+                                    <el-input v-model="form_edit.title" autocomplete="off"></el-input>
                                 </el-form-item>
                                 <el-form-item label="Status" :label-width="formLabelWidth">
-                                    <el-select v-model="form.status">
-                                        <el-option label="Active" value="true"></el-option>
-                                        <el-option label="Disabled" value="false"></el-option>
+                                    <el-select v-model="form_edit.status">
+                                        <el-option
+                                        v-for="status in statuses"
+                                        :key="status.value"
+                                        :label="status.label"
+                                        :value="status.value">
+                                        </el-option>
                                     </el-select>
                                 </el-form-item>
                             </el-form>
                             <span slot="footer" class="dialog-footer">
                                 <el-button type="danger" @click="handleDelete()">Delete</el-button>
-                                <el-button @click="dialogVisible = false">Close</el-button>
-                                <el-button type="primary" @click="dialogVisible = false">Update</el-button>
+                                <el-button @click="dialogEditVisible = false">Close</el-button>
+                                <el-button type="primary" @click="updateAlbum">Update</el-button>
                             </span>
                         </el-dialog>
                     </div>
@@ -113,6 +122,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
 <script src="{{ asset('assets/js/plugins.js') }}"></script>
 <script src="{{ asset('assets/js/main.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
 <script src="https://unpkg.com/element-ui/lib/index.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.4.7/locale/en.js"></script>
@@ -123,48 +133,36 @@
 <script>
     var app = new Vue({
       el: '#app',
+      mounted: function() {
+        this.table_change();
+      },
       data: function() {
         return {
-            tableData: [{
-            date: '2016-05-03',
-            name: 'Tom',
-            state: 'California',
-            city: 'Los Angeles',
-            address: 'No. 189, Grove St, Los Angeles',
-            zip: 'CA 90036',
-            tag: 'Home'
-            }, {
-            date: '2016-05-02',
-            name: 'Tom',
-            state: 'California',
-            city: 'Los Angeles',
-            address: 'No. 189, Grove St, Los Angeles',
-            zip: 'CA 90036',
-            tag: 'Office'
-            }, {
-            date: '2016-05-04',
-            name: 'Tom',
-            state: 'California',
-            city: 'Los Angeles',
-            address: 'No. 189, Grove St, Los Angeles',
-            zip: 'CA 90036',
-            tag: 'Home'
-            }, {
-            date: '2016-05-01',
-            name: 'Tom',
-            state: 'California',
-            city: 'Los Angeles',
-            address: 'No. 189, Grove St, Los Angeles',
-            zip: 'CA 90036',
-            tag: 'Office'
-            }],
+            albums: [],
+            current_page: 1,
+            page_size: 10,
+            total: null,
             formInline: {
                 user: '',
                 region: ''
             },
-            dialogFormVisible: false,
-            dialogVisible: false,
+            form_add: {
+                title: ''
+            },
+            form_edit: {
+                id: null,
+                title: '',
+                status: ''
+            },
+            dialogEditVisible: false,
             dialogAddVisible: false,
+            statuses: [{
+                value: '1',
+                label: 'Active'
+                }, {
+                value: '0',
+                label: 'Disable'
+            }],
             form: {
                 name: '',
                 region: '',
@@ -181,26 +179,79 @@
       },
       methods: {
         indexMethod(index) {
-            return index * 2;
+            return parseInt(index) + 1;
         },
         handleSizeChange(val) {
-            console.log(`${val} items per page`);
+            this.page_size = val;
+            this.table_change();
         },
         handleCurrentChange(val) {
-            console.log(`current page: ${val}`);
+            this.current_page = val;
+            this.table_change();
         },
-        handleEdit() {
-            this.dialogFormVisible = true;
-            this.dialogVisible = true;
-        },
-        handleClose(done) {
-            this.$confirm('Are you sure to close this dialog?')
-            .then(_ => {
-                done();
+        table_change() {
+            var com = this;
+            axios.get('api/albums', {params: {limit: com.page_size, offset: com.page_size * (com.current_page - 1)}})
+            .then(function (response) {
+                com.albums = response.data[0];
+                com.total = response.data[1];
             })
-            .catch(_ => {});
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+        addAlbum() {
+            var com = this;
+            axios.post('api/albums', {name: com.form_add.title})
+            .then(function (response) {
+                com.$notify({
+                    title: 'Success',
+                    message: 'Successful add album',
+                    type: 'success'
+                });
+                com.dialogAddVisible = false;
+                com.form_add.title = '';
+                com.table_change();
+            })
+            .catch(function (error) {
+                this.$notify.error({
+                    title: 'Error',
+                    message: error.message
+                });
+            });
+        },
+        editAlbum(index, row) {
+            var com = this;
+            axios.get(`api/albums/${row.id}`)
+            .then(function (response) {
+                com.form_edit.title = response.data.name;
+                com.form_edit.status = response.data.status == 1 ? 'Active' : 'Disable';
+                com.form_edit.id = response.data.id;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+            this.dialogEditVisible = true;
+        },
+        updateAlbum() {
+            var com = this;
+            var status = com.form_edit.status == 1 || com.form_edit.status == 'Active' ? 1 : 0;
+            axios.put(`/api/albums/${com.form_edit.id}`, {id: com.form_edit.id, title: com.form_edit.title, status: status})
+            .then(function (response) {
+                com.$notify({
+                    title: 'Success',
+                    message: 'Successful update album',
+                    type: 'success'
+                });
+                com.dialogEditVisible = false;
+                com.table_change();
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
         },
         handleDelete() {
+            var com = this;
             swal({
                 title: "Are you sure?",
                 text: "Once deleted, you will not be able to recover this album!",
@@ -210,14 +261,28 @@
             })
             .then((willDelete) => {
                 if (willDelete) {
-                    swal("Poof! Your album has been deleted!", {
-                    icon: "success",
-                });
+                    axios.delete(`api/albums/${com.form_edit.id}`)
+                    .then(function (response) {
+                        swal("Poof! Your album has been deleted!", {
+                            icon: "success",
+                        });
+                        com.dialogEditVisible = false;
+                        com.table_change();
+                    })
+                    .catch(function (error) {
+                        this.$notify.error({
+                            title: 'Error',
+                            message: error.message
+                        });
+                    });
                 } else {
                     swal("Your album is safe!");
                 }
             });
-        }
+        },
+        viewAlbum(index, row) {
+            window.location.href = `/photos/albums/${row.slug}`;
+        },
       }
     })
 </script>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Album;
 
 class HomeController extends Controller
 {
@@ -32,9 +33,16 @@ class HomeController extends Controller
         return view('user.user');
     }
 
-    public function profiles()
+    public function profiles(Request $request)
     {
-        return view('user.user_profile');
+        $user_slug = $request->user_slug;
+        return view('user.user_profile', ['user_slug' => $user_slug]);
+    }
+
+    public function profiles_edit(Request $request)
+    {
+        $user_slug = $request->user_slug;
+        return view('user.user_profile_edit', ['method' => 'edit', 'user_slug' => $user_slug]);
     }
 
     public function add()
@@ -74,8 +82,9 @@ class HomeController extends Controller
         return view('photo.photo');
     }
 
-    public function albums()
+    public function albums($album_slug)
     {
-        return view('photo.album');
+        $album = Album::where('slug', $album_slug)->first();
+        return view('photo.album', ['album' => $album]);
     }
 }
