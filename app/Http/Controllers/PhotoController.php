@@ -127,17 +127,22 @@ class PhotoController extends Controller
             }
         })->unique();
         
-        if($request->get('image'))
-        {
-           $image = $request->get('image');
-           Cloudder::upload($image);
+        $image_url = '';
+        if ($request->photo_is_new) {
+            if($request->get('image'))
+            {
+            $image = $request->get('image');
+            Cloudder::upload($image);
+            }
+            $result = Cloudder::getResult();
+            $image_url = $result['url'];
         }
-        $result = Cloudder::getResult();
-        $image_url = $result['url'];
         
         $photo = Photo::find($request->photo['id']);
         $photo->name = $request->photo['name'];
-        $photo->image_url = $image_url;
+        if ($image_url != '') {
+            $photo->image_url = $image_url;
+        }
         $photo->status = $request->photo['status'] == 1 || $request->photo['status'] == 'Active' ? 1 : 0;
         $photo->save();
         
