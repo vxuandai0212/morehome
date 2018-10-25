@@ -16,7 +16,6 @@ class AlbumController extends Controller
      */
     public function index(Request $request)
     {
-        // dd(Carbon::parse('2018-10-07 14:25:51')->diffForHumans());
         $limit = $request->limit;
         $offset = $request->offset;
         $total = Album::all()->count();

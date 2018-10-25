@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Album;
+use App\Post;
 
 class HomeController extends Controller
 {
@@ -65,15 +66,21 @@ class HomeController extends Controller
         return view('role.add_role');
     }
 
-    //Page
-    public function pages()
+    //Post
+    public function posts()
     {
-        return view('page.page');
+        return view('post.post');
     }
 
-    public function add_page()
+    public function add_post()
     {
-        return view('page.add_page');
+        return view('post.add_post');
+    }
+
+    public function edit_post($post_slug)
+    {
+        $post = Post::where('slug', $post_slug)->first();
+        return view('post.edit_post', ['post' => $post]);
     }
 
     //Photo

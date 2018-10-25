@@ -5,20 +5,22 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 
-class Page extends Model
+class Post extends Model
 {
     use Sluggable;
 
     protected $fillable = [
         'name', 
         'title', 
+        'view_count',
         'description', 
         'keywords',
-        'level_page',
-        'parent_page',
+        'category',
         'display_in_menu',
         'scheduling_post',
         'template_url',
+        'view_url',
+        'edit_url',
         'content',
         'status',
         'created_by',

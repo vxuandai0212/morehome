@@ -10,10 +10,26 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/', 'PageController@home')->name('home');
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/about', 'PageController@about')->name('about');
+
+Route::get('/contact', 'PageController@contact')->name('contact');
+
+//Services
+Route::get('/services', 'PageController@services')->name('services');
+
+Route::get('/services/{service_category_slug}', 'PageController@service')->name('service');
+
+//Projects
+Route::get('/projects', 'PageController@projects')->name('projects');
+
+Route::get('/projects/{project_slug}', 'PageController@project')->name('project');
+
+//Advice
+Route::get('/ideabooks', 'PageController@ideabooks')->name('advices');
+
+Route::get('/ideabooks/{ideabook_slug}', 'PageController@ideabook')->name('advice');
 
 Auth::routes();
 
@@ -28,8 +44,9 @@ Route::name('admin.')->group(function () {
     Route::get('/users/manage-role', 'HomeController@manage_role')->name('manage_role');
     Route::get('/users/manage-role/add-role', 'HomeController@add_role')->name('add_role');
 
-    Route::get('/pages', 'HomeController@pages')->name('page');
-    Route::get('/pages/add-page', 'HomeController@add_page')->name('add_page');
+    Route::get('/posts', 'HomeController@posts')->name('post');
+    Route::get('/posts/add', 'HomeController@add_post')->name('add_post');
+    Route::get('/posts/edit/{post_slug}', 'HomeController@edit_post')->name('edit_post');
 
     Route::get('/photos', 'HomeController@photos')->name('photo');
     Route::get('/photos/albums/{album_slug}', 'HomeController@albums')->name('album');
@@ -46,6 +63,12 @@ Route::prefix('api')->group(function () {
     Route::get('permissions', 'PermissionController@index');
 
     Route::get('roles', 'RoleController@index');
+
+    Route::get('posts', 'PostController@index');
+    Route::get('posts/{post_id}', 'PostController@show');
+    Route::post('posts', 'PostController@store');
+    Route::put('posts/{post_id}', 'PostController@update')->name('api_post_update');
+    Route::delete('posts/{post_id}', 'PostController@destroy');
 
     Route::get('albums', 'AlbumController@index');
     Route::get('albums/{album_id}', 'AlbumController@show');

@@ -73,7 +73,6 @@
                 <div class="page-title">
                     <ol class="breadcrumb text-right">
                         <li><a href="{{ route('admin.photo') }}">Photo</a></li>
-                        <li><a>Album</a></li>
                         <li class="active">Beautiful Kitchen</li>
                     </ol>
                 </div>
@@ -212,9 +211,12 @@
                                     </el-form-item>
                                 </el-form>
                             </el-row>
-                            <span slot="footer" class="dialog-footer">
+                            <span slot="footer" class="dialog-footer" v-if="!disable_add_button">
                                 <el-button @click="dialogAddVisible = false">Close</el-button>
                                 <el-button type="primary" @click="addPhoto">Add</el-button>
+                            </span>
+                            <span slot="footer" class="dialog-footer" v-else>
+                                <el-button type="primary" disabled>Uploading...</el-button>
                             </span>
                         </el-dialog>
 
@@ -280,10 +282,13 @@
                                     </el-form-item>
                                 </el-form>
                             </el-row>
-                            <span slot="footer" class="dialog-footer">
+                            <span slot="footer" class="dialog-footer" v-if="!disable_edit_button">
                                 <el-button type="danger" @click="handleDelete()">Delete</el-button>
                                 <el-button type="default" @click="dialogEditVisible = false">Close</el-button>
                                 <el-button type="primary" @click="update">Update</el-button>
+                            </span>
+                            <span slot="footer" class="dialog-footer" v-else>
+                                <el-button type="primary" disabled>Updating...</el-button>
                             </span>
                         </el-dialog>
                     </div>
@@ -342,7 +347,10 @@
                 status: null,
                 image_url: ''
             },
-            edit_image: ''
+            edit_image: '',
+            disable_add_button: false,
+            disable_edit_button: false,
+            edit_photo_is_new: false
         }
       },
       created: function() {
@@ -416,6 +424,7 @@
             reader.readAsDataURL(file);
         },
         onImageEditChange(e) {
+            this.edit_photo_is_new = true;
             let files = e.target.files || e.dataTransfer.files;
             if (!files.length)
                 return;
@@ -434,6 +443,7 @@
         },
         addPhoto() {
             var com = this;
+            com.disable_add_button = true;
             axios.post('/api/photos', {photo: com.form_photo, image: com.image})
             .then(function (response) {
                 com.$notify({
@@ -441,9 +451,9 @@
                     message: 'Successful add photo to album',
                     type: 'success'
                 });
-                setTimeout(function(){
-                    location.reload();
-                },2000)
+                com.dialogAddVisible = false;
+                com.table_change();
+                com.disable_add_button = false;
             })
             .catch(function (error) {
                 console.log(error);
@@ -464,7 +474,8 @@
         },
         update() {
             var com = this;
-            axios.put(`/api/photos/${com.edit_photo.id}`, {photo: com.edit_photo, image: com.edit_image})
+            com.disable_edit_button = true;
+            axios.put(`/api/photos/${com.edit_photo.id}`, {photo: com.edit_photo, image: com.edit_image, photo_is_new: com.edit_photo_is_new})
             .then(function (response) {
                 com.$notify({
                     title: 'Success',
@@ -472,7 +483,9 @@
                     type: 'success'
                 });
                 com.dialogEditVisible = false;
+                com.edit_photo_is_new = false;
                 com.table_change();
+                com.disable_edit_button = false;
             })
             .catch(function (error) {
                 console.log(error);

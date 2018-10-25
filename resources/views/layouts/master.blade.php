@@ -21,9 +21,7 @@
 
 </head>
 <body>
-
-
-        <!-- Left Panel -->
+    <!-- Left Panel -->
 
     <aside id="left-panel" class="left-panel">
         <nav class="navbar navbar-expand-sm navbar-default">
@@ -46,7 +44,7 @@
                         <a href="{{ route('admin.user') }}"> <i class="menu-icon fa fa-users"></i>User</a>
                     </li>
                     <li class="menu-item-has-children">
-                        <a href="{{ route('admin.page') }}"> <i class="menu-icon fa fa-file-text"></i>Page</a>
+                        <a href="{{ route('admin.post') }}"> <i class="menu-icon fa fa-file-text"></i>Post</a>
                     </li>
                     <li class="menu-item-has-children">
                         <a href="{{ route('admin.photo') }}"> <i class="menu-icon fa fa-picture-o"></i>Photo</a>
