@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Events\UserViewedPost;
 use App\Post;
 
 class PageController extends Controller
@@ -50,6 +51,7 @@ class PageController extends Controller
     public function ideabook($ideabook_slug)
     {
         $post = Post::where('slug', $ideabook_slug)->first();
+        event(new UserViewedPost($post));
         return view('frontend.blog_single',['post' => $post]);
     }
 }

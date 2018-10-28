@@ -83,7 +83,33 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        $post = Post::with(['tags:id'])->find($id);
+        $post = Post::with([
+            'author',
+            'author.role',
+            'tags:id', 
+            'comments.users:name', 
+            'comments.replies', 
+            'comments.replies.users:name',
+            'likes' => function ($query) {
+                $query->select('users.id');
+            },
+            'bookmarks' => function ($query) {
+                $query->select('users.id');
+            },
+            'rates' => function ($query) {
+                $query->select('users.id', 'activity_logs.rate');
+            }
+        ])->withCount([
+            'user_interactions as likes_count' => function ($query) {
+                $query->where('has_like', 1);
+            }, 
+            'user_interactions as bookmarks_count' => function ($query) {
+                $query->where('has_bookmark', 1);
+            },
+            'user_interactions as comments_count' => function ($query) {
+                $query->whereIn('action_type_id', [10, 13]);
+            }
+        ])->find($id);
         return $post;
     }
 
