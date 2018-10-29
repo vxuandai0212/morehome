@@ -8,6 +8,10 @@ use App\User;
 use App\Category;
 use App\Tag;
 use App\Album;
+use App\ActionType;
+use App\Comment;
+use App\ActivityLog;
+use App\Post;
 
 class DatabaseSeeder extends Seeder
 {
@@ -26,6 +30,10 @@ class DatabaseSeeder extends Seeder
         Module::truncate();
         Category::truncate();
         Album::truncate();
+        ActionType::truncate();
+        Comment::truncate();
+        ActivityLog::truncate();
+        Post::truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $this->call([
@@ -36,6 +44,10 @@ class DatabaseSeeder extends Seeder
             CategoriesTableSeeder::class,
             TagsTableSeeder::class,
             AlbumsTableSeeder::class,
+            ActionTypesTableSeeder::class,
+            CommentsTableSeeder::class,
+            PostsTableSeeder::class,
+            ActivityLogsTableSeeder::class
         ]);
     }
 }

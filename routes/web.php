@@ -19,17 +19,17 @@ Route::get('/contact', 'PageController@contact')->name('contact');
 //Services
 Route::get('/services', 'PageController@services')->name('services');
 
-Route::get('/services/{service_category_slug}', 'PageController@service')->name('service');
+Route::get('/services/{service_category_slug}', 'PageController@service')->name('service')->middleware('post_view');
 
 //Projects
 Route::get('/projects', 'PageController@projects')->name('projects');
 
-Route::get('/projects/{project_slug}', 'PageController@project')->name('project');
+Route::get('/projects/{project_slug}', 'PageController@project')->name('project')->middleware('post_view');
 
 //Advice
 Route::get('/ideabooks', 'PageController@ideabooks')->name('advices');
 
-Route::get('/ideabooks/{ideabook_slug}', 'PageController@ideabook')->name('advice');
+Route::get('/ideabooks/{ideabook_slug}', 'PageController@ideabook')->name('advice')->middleware('post_view');
 
 Auth::routes();
 
@@ -84,5 +84,21 @@ Route::prefix('api')->group(function () {
     Route::get('categories', 'CategoryController@index');
 
     Route::get('tags', 'TagController@index');
+
+    // comment and reply
+    Route::post('comments', 'CommentController@comments');
+    Route::get('comments/post/{post_id}', 'CommentController@get_comment_in_post');
+
+    // like
+    Route::post('likes', 'UserActivityController@likes');
+    Route::put('likes/{like_id}', 'UserActivityController@unlikes');
+
+    // bookmark
+    Route::post('bookmarks', 'UserActivityController@bookmarks');
+    Route::put('bookmarks/{bookmark_id}', 'UserActivityController@unbookmarks');
+
+    // rate
+    Route::post('rates', 'UserActivityController@rates');
+    Route::put('rates/{rate_id}', 'UserActivityController@update_rate');
 
 });

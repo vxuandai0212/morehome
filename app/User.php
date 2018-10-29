@@ -41,12 +41,17 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'pivot'
     ];
 
     public function role()
     {
         return $this->belongsTo('App\Role');
+    }
+
+    public function comments()
+    {
+        return $this->belongsToMany('App\Comment', 'activity_logs');
     }
 
     public function sluggable()

@@ -16,9 +16,9 @@ class CategoryPhoto extends Migration
         Schema::create('category_photo', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('category_id');
-            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');;
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->unsignedInteger('photo_id');
-            $table->foreign('photo_id')->references('id')->on('photos')->onDelete('cascade');;
+            $table->foreign('photo_id')->references('id')->on('photos')->onDelete('cascade');
         });
     }
 
