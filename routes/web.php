@@ -31,6 +31,9 @@ Route::get('/ideabooks', 'PageController@ideabooks')->name('advices');
 
 Route::get('/ideabooks/{ideabook_slug}', 'PageController@ideabook')->name('advice')->middleware('post_view');
 
+//Personal Page
+Route::get('/personal/{username}', 'UserController@personal');
+
 Auth::routes();
 
 Route::name('admin.')->group(function () {
@@ -55,7 +58,7 @@ Route::name('admin.')->group(function () {
 
 Route::prefix('api')->group(function () {
     Route::get('users', 'UserController@index');
-    Route::get('users/{user_slug}', 'UserController@show');
+    Route::get('users/{user_id}', 'UserController@show');
     Route::post('users', 'UserController@store');
     Route::put('users/{user_slug}', 'UserController@update')->name('api_user_update');
     Route::delete('users/{user_slug}', 'UserController@delete');

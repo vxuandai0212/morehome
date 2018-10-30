@@ -49,6 +49,11 @@ class User extends Authenticatable
         return $this->belongsTo('App\Role');
     }
 
+    public function posts()
+    {
+        return $this->belongsToMany('App\Post', 'activity_logs', 'root_user_id', 'post_id')->wherePivot('action_type_id', 18);
+    }
+
     public function comments()
     {
         return $this->belongsToMany('App\Comment', 'activity_logs');

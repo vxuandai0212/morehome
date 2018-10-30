@@ -27,10 +27,9 @@ class UserController extends Controller
         return [$users, $total];
     }
 
-    public function show(Request $request)
+    public function show($user_id)
     {
-        $user_slug = $request->user_slug;
-        $user = User::where('slug', $user_slug)->get();
+        $user = User::with(['role','posts.tags', 'posts.author'])->find($user_id);
         return $user;
     }
 
@@ -64,5 +63,11 @@ class UserController extends Controller
         $user->delete();
 
         return response()->json(null, 204);
+    }
+
+    public function personal($username)
+    {
+        $user = User::where("username", $username)->first();
+        return view('frontend.personal_page',['user' => $user]);
     }
 }
