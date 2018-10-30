@@ -16,6 +16,34 @@
 <title>Interior</title>
 @endsection
 
+@section('css')
+<style>
+.vietnamese
+{
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.mpadding
+{
+    padding: 70px;
+}
+
+.smpadding
+{
+    padding: 30px;
+}
+
+.text-bold
+{
+    font-weight: bold;
+}
+.imagesbg
+{
+    background-image: url({{ asset('frontend/img/room-1336497_1920.jpg') }})
+}
+</style>
+@endsection
+
 @section('content')
 			<!-- start banner Area -->
 			<section class="banner-area relative" id="home">	
@@ -26,388 +54,220 @@
 							<h1 class="text-white">
 								About Us				
 							</h1>	
-							<p class="text-white link-nav"><a href="index.html">Home </a>  <span class="lnr lnr-arrow-right"></span>  <a href="about.html"> About Us</a></p>
+							<p class="text-white link-nav"><a href="{{route('home')}}">Home </a>  <span class="lnr lnr-arrow-right"></span>  <a href="{{route('about')}}"> About Us</a></p>
 						</div>	
 					</div>
 				</div>
 			</section>
 			<!-- End banner Area -->	
 
-			<!-- Start about-video Area -->
+			<!-- Start about Area -->
 			<section class="about-video-area section-gap">
 				<div class="container">
 					<div class="row align-items-center">
 						<div class="col-lg-6 about-video-left">
-							<h6 class="text-uppercase">Brand new app to blow your mind</h6>
 							<h1>
-								We’ve made a life <br>
-								that will change you 
+								Giới thiệu
 							</h1>
-							<p>
-								<span>We are here to listen from you deliver exellence</span>
+							<p class="vietnamese">
+								Được thành lập vào năm 2009, Công ty cổ phần Morehome được biết đến là một đơn vị chuyên sâu trong lĩnh vực tư vấn thiết kế nội thất và thi công nội thất và sản xuất nội thất hàng đầu tại Việt Nam.
 							</p>
-							<p>
-								Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim.
-							</p>
-							<a class="primary-btn mt-30" href="#">Get Started Now</a>
 						</div>
 						<div class="col-lg-6 about-video-right justify-content-center align-items-center d-flex relative">
-							<div class="overlay overlay-bg"></div>
-							<a class="play-btn" href="https://www.youtube.com/watch?v=ARA0AxrnHdM"><img class="img-fluid mx-auto" src="{{ asset('frontend/css/main.css') }}img/play-btn.png" alt=""></a>
+							<img src="{{ asset('frontend/img/bedroom-416062.jpg') }}" alt="" width="570px" height="330px;">
 						</div>
 					</div>
 				</div>	
 			</section>
-			<!-- End about-video Area -->					
+			<!-- End about Area -->					
 
-			<!-- Start feature Area -->
+			<!-- Start Human Resources Area -->	
 			<section class="feature-area section-gap">
+					<div class="container">
+						<div class="row align-items-center">
+							<div class="col-lg-6 about-video-right justify-content-center align-items-center d-flex relative">
+								<img src="{{ asset('frontend/img/architecture-1477041_1280.jpg') }}" alt="" width="570px" height="330px;">
+							</div>
+							<div class="col-lg-6 about-video-left">
+									<h1 class="text-white">
+										Nguồn nhân lực
+									</h1>
+									<p class="vietnamese text-white">
+										Với đội ngũ chuyên gia, kiến trúc sư, kỹ sư được đào tạo chuyên sâu, có nhiều năm kinh nghiệm kết hợp với đội ngũ thi công lành nghề chúng tôi đã hoàn thành hàng trăm công trình chất lượng cao mang tầm vóc Quốc Gia , chúng tôi luôn đem đến cho quý khách hàng những sản phẩm sáng tạo về thiết kế thi công đẳng cấp và khác biệt nhất cho căn nhà của bạn, đáp ứng tốt mọi nhu cầu ngày càng cao của khách hàng.
+							</div>
+						</div>
+					</div>	
+				</section>
+
+			<!-- Start Service Area -->
+			<section class="feature-area section-gap imagesbg">
 				<div class="container">
 					<div class="row d-flex justify-content-center">
 						<div class="col-md-12 pb-40 header-text text-center">
-							<h1 class="pb-10 text-white">Some Features that Made us Unique</h1>
+							<h1 class="pb-10 text-black">Dịch vụ</h1>
 							<p class="text-white">
-								Who are in extremely love with eco friendly system.
+								Sau đây Morehome xin giới chi tiết các dịch vụ hàng đầu Nội thất Morehome
 							</p>
 						</div>
 					</div>							
 					<div class="row">
-						<div class="col-lg-4 col-md-6">
+						<div class="col-lg-6 col-md-6">
 							<div class="single-feature">
-								<a href="#" class="title d-flex flex-row align-items-center">
-									<span class="lnr lnr-user"></span>
-									<h4>Expert Technicians</h4>
+								<a href="#" class="title d-flex justify-content-center">
+									<span class="lnr fas fa-pencil-ruler"></span>
+									<h4 class="vietnamese">Thiết kế nội thất</h4>
 								</a>
-								<p>
-									Computer users and programmers have become so accustomed to using Windows, even for the changing.
-								</p>
 							</div>
 						</div>
-						<div class="col-lg-4 col-md-6">
+						<div class="col-lg-6 col-md-6">
 							<div class="single-feature">
-								<a href="#" class="title d-flex flex-row align-items-center">
-									<span class="lnr lnr-license"></span>
-									<h4>Professional Service</h4>
+								<a href="#" class="title d-flex justify-content-center">
+									<span class="lnr fas fa-home"></span>
+									<h4 class="vietnamese">Thiết kế kiến trúc</h4>
 								</a>
-								<p>
-									Finding the perfect learning tool for Flash is a daunting task to any novice web developer. One can find help.
-								</p>
 							</div>
 						</div>
-						<div class="col-lg-4 col-md-6">
+						<div class="col-lg-6 col-md-6">
 							<div class="single-feature">
-								<a href="#" class="title d-flex flex-row align-items-center">
-									<span class="lnr lnr-phone"></span>
-									<h4>Great Support</h4>
+								<a href="#" class="title d-flex justify-content-center">
+									<span class="lnr fas fa-couch"></span>
+									<h4 class="vietnamese">Thi công nội thất</h4>
 								</a>
-								<p>
-									While most people enjoy casino ambling, sports betting, lottery and bingo playing for the fun and excitement.
-								</p>
 							</div>
 						</div>						
-						<div class="col-lg-4 col-md-6">
+						<div class="col-lg-6 col-md-6">
 							<div class="single-feature">
-								<a href="#" class="title d-flex flex-row align-items-center">
-									<span class="lnr lnr-rocket"></span>
-									<h4>Technical Skills</h4>
+								<a href="#" class="title d-flex justify-content-center">
+									<span class="lnr fas fa-box-open"></span> 
+									<h4 class="vietnamese">Sản xuất nội thất</h4>
 								</a>
-								<p>
-									“The moment you think of buying a Web Hosting Plan, you know one thing – So many choices, which one to choose.
-								</p>
 							</div>
 						</div>
-						<div class="col-lg-4 col-md-6">
-							<div class="single-feature">
-								<a href="#" class="title d-flex flex-row align-items-center">
-									<span class="lnr lnr-diamond"></span>
-									<h4>Highly Recomended</h4>
-								</a>
-								<p>
-									Many conventional colleges and universities are now offering online DVD repair courses, which are the exact same.
-								</p>
-							</div>
-						</div>
-						<div class="col-lg-4 col-md-6">
-							<div class="single-feature">
-								<a href="#" class="title d-flex flex-row align-items-center">
-									<span class="lnr lnr-bubble"></span>
-									<h4>Positive Reviews</h4>
-								</a>
-								<p>
-									So you have your new digital camera and clicking away to glory anything and everything in sight. Now you want.
-								</p>
-							</div>
-						</div>	
-
 					</div>
-				</div>	
+				</div>
 			</section>
-			<!-- End feature Area -->	
+			<!-- End service Area -->	
 
-		    <!-- Start testimonial Area -->
-		    <section class="testimonial-area pt-120">
+		    <!-- Start strategy Area -->
+		    <section class="testimonial-area pt-120 pb-120">
 		        <div class="container">
 		            <div class="row d-flex justify-content-center">
 		                <div class="menu-content pb-70 col-lg-8">
 		                    <div class="title text-center">
-		                        <h1 class="mb-10">Testimonial from our Clients</h1>
-		                        <p>Who are in extremely love with eco friendly system.</p>
+		                        <h1 class="mb-10">Chiến lược phát triển bền vững</h1>
+		                        <p class="vietnamese"> Thế mạnh của MOREHOME  là thiết kế và thi công nội thất ngoài ra chúng tôi còn đẩy mạnh nhiều sản phẩm thương hiệu khác và nhận được sự tin tưởng giao phó của khách hàng. Trong nhiều năm qua lĩnh vực hoạt động của công ty ngày càng được mở rộng. Nếu bạn thực sự có nhu cầu, hãy gọi đến hotline: 097 543 8686 hoặc truy cập website: thietkenoithat.com để được tư vấn chi tiết. Ngoài ra, bạn có thể đến trực tiếp văn phòng Morehome để được tư vấn cụ thể và chiêm ngưỡng những sản phẩm được sản xuất bởi Morehome.</p>
 		                    </div>
 		                </div>
-		            </div>
-		            <div class="row">
-		                <div class="active-testimonial-carusel">
-		                    <div class="single-testimonial item d-flex flex-row">
-		                        <div class="thumb">
-		                            <img class="img-fluid" src="{{ asset('frontend/img/elements/user1.png') }}" alt="">
-		                        </div>
-		                        <div class="desc">
-		                            <p>
-		                                Accessories Here you can find the best computer accessory for your laptop, monitor, printer, scanner, speaker, projector, hardware.
-		                            </p>
-		                            <h4 mt-30>Mark Alviro Wiens</h4>
-									<div class="star">
-										<span class="fa fa-star checked"></span>
-										<span class="fa fa-star checked"></span>
-										<span class="fa fa-star checked"></span>
-										<span class="fa fa-star checked"></span>
-										<span class="fa fa-star"></span>								
-									</div>			                            
-		                        </div>
-		                    </div>
-		                    <div class="single-testimonial item d-flex flex-row">
-		                        <div class="thumb">
-		                            <img class="img-fluid" src="{{ asset('frontend/img/elements/user2.png') }}" alt="">
-		                        </div>
-		                        <div class="desc">
-		                            <p>
-		                                Hypnosis quit smoking methods maintain caused quite world over the last two decades. There is a lot of argument pertaining to
-		                            </p>
-		                            <h4 mt-30>Lina Harrington</h4>
-									<div class="star">
-										<span class="fa fa-star checked"></span>
-										<span class="fa fa-star checked"></span>
-										<span class="fa fa-star checked"></span>
-										<span class="fa fa-star"></span>
-										<span class="fa fa-star"></span>								
-									</div>			                            
-		                        </div>
-		                    </div>
-		                    <div class="single-testimonial item d-flex flex-row">
-		                        <div class="thumb">
-		                            <img class="img-fluid" src="{{ asset('frontend/img/elements/user1.png') }}" alt="">
-		                        </div>
-		                        <div class="desc">
-		                            <p>
-		                                Accessories Here you can find the best computer accessory for your laptop, monitor, printer, scanner, speaker, projector, hardware.
-		                            </p>
-		                            <h4 mt-30>Mark Alviro Wiens</h4>
-									<div class="star">
-										<span class="fa fa-star checked"></span>
-										<span class="fa fa-star checked"></span>
-										<span class="fa fa-star checked"></span>
-										<span class="fa fa-star checked"></span>
-										<span class="fa fa-star"></span>								
-									</div>			                            
-		                        </div>
-		                    </div>
-		                    <div class="single-testimonial item d-flex flex-row">
-		                        <div class="thumb">
-		                            <img class="img-fluid" src="{{ asset('frontend/img/elements/user2.png') }}" alt="">
-		                        </div>
-		                        <div class="desc">
-		                            <p>
-		                                Hypnosis quit smoking methods maintain caused quite world over the last two decades. There is a lot of argument pertaining to
-		                            </p>
-		                            <h4 mt-30>Lina Harrington</h4>
-									<div class="star">
-										<span class="fa fa-star checked"></span>
-										<span class="fa fa-star checked"></span>
-										<span class="fa fa-star"></span>
-										<span class="fa fa-star"></span>
-										<span class="fa fa-star"></span>								
-									</div>			                            
-		                        </div>
-		                    </div>		                    
-		                </div>
-		            </div>
+					</div>
+					<div class="row align-items-center ">
+							<div class="col-lg-6 about-video-right justify-content-center align-items-center d-flex relative">
+								<img src="{{ asset('frontend/img/living-room-690174_1920.jpg') }}" alt="" width="570px" height="330px;">
+							</div>
+							<div class="col-lg-6 about-video-left">
+									<h3>
+										Phương hướng phát triển chung
+									</h3>
+									<p class="vietnamese mt-3">
+											-  Xây dựng những giá trị văn hóa tốt đẹp và môi trường làm việc văn minh.<br>
+											-  Luôn tìm tòi, nghiên cứu sản phẩm phù hợp với thị hiếu của người tiêu dùng và không ngừng phát triển nhằm đáp ứng nhu cầu tốt nhất cho khách hàng.<br>											
+											-  Luôn đề cao việc đào tạo, bồi dưỡng nguồn nhân lực và nâng cao tay nghề.
+									</p>
+							</div>
+					</div>
+					<div class="row align-items-center ">
+							<div class="col-lg-6 about-video-left">
+									<h3>
+										Đối với nhân viên
+									</h3>
+									<p class="vietnamese mt-3">
+											- Sắp xếp và bố trí làm việc hợp lý, đúng với  nhu cầu của từng vị trí và từng công việc cụ thể trên cơ sở căn cứ vào công việc, tìm người có năng lực tương xứng với vị trí đảm nhiệm.<br>
+											- Chủ động thực hiện công tác đào tạo, bồi dưỡng năng lực cho cán bộ công nhân viên để nâng cao trình độ kiến thức chuyên môn của cán bộ và tay nghề cho công nhân để họ có thể tiếp cận và sử dụng được máy móc hiện đại, sản xuất ra những sản phẩm đạt chất lượng cao.<br>										
+											- Xây dựng định mức lao động và các cơ chế, chính sách về tiền lương, tiền thưởng phù hợp để động viên được những lao động tích cực, có tinh thần trách nhiệm với công việc.<br>											
+											- Quan tâm đến đời sống tinh thần cho CBCNV qua các hoạt động như thưởng vào các ngày lễ tết, nghỉ mát, thăm hỏi, động viên,…
+									</p>
+							</div>
+							<div class="col-lg-6 about-video-right justify-content-center align-items-center d-flex relative">
+									<img src="{{ asset('frontend/img/Pool-House-HD-wallpaper.jpg') }}" alt="" width="570px" height="330px;">
+							</div>
+					</div>
+					<div class="row align-items-center ">
+							<div class="col-lg-6 about-video-right justify-content-center align-items-center d-flex relative">
+								<img src="{{ asset('frontend/img/chair-1845270_1920.jpg') }}" alt="" width="570px" height="330px;">
+							</div>
+							<div class="col-lg-6 about-video-left">
+									<h3>
+										Đối với sản phẩm - Dịch vụ
+									</h3>
+									<p class="vietnamese mt-3">
+											- Tập trung cải tiến các khâu sản xuất, chất lượng nguyên vật liệu đầu vào.<br>
+											- Phương châm làm việc: luôn lắng nghe ý kiến khách hàng để tạo ra những sản phẩm thỏa mãn mọi nhu cầu, hệ thống quản lý chất lượng của Công ty có một quy trình hướng dẫn, theo dõi và thu thập, xử lý thông tin khách hàng thông qua các dịch vụ sửa chữa, bảo hành, …<br>											
+											- Tiếp tục nâng cao chất lượng và tính thẩm mỹ của sản phẩm, nâng cao năng lực cạnh tranh của sản phẩm một cách toàn diện.
+									</p>
+							</div>
+					</div>
+					<div class="row align-items-center ">
+							<div class="col-lg-6 about-video-left">
+									<h3>
+										Đối với khách hàng
+									</h3>
+									<p class="vietnamese mt-3">
+											- Thực hiện tốt dịch vụ chăm sóc khách hàng. Sử dụng các thông tin về thỏa mãn và không thỏa mãn của khách hàng để kịp thời thông qua dịch vụ sửa chữa bảo hành sản phẩm.<br>
+											- Xây dựng chính sách đãi ngộ cho khách hàng dựa trên năng lực thực tế.<br>										
+											- Xây dựng mối qua hệ công bằng giữa khách hàng và doanh nghiệp trên cơ sở cùng chia sẻ lợi ích giữa các bên để cùng nhau phát triển bền vững.
+									</p>
+							</div>
+							<div class="col-lg-6 about-video-right justify-content-center align-items-center d-flex relative">
+									<img src="{{ asset('frontend/img/columns-801715_1280.jpg') }}" alt="" width="570px" height="330px;">
+							</div>
+					</div>
 		        </div>
 		    </section>
-		    <!-- End testimonial Area -->	
+		    <!-- End strategy Area -->	
 
-			<!-- Start callto-action Area -->
-			<section class="callto-action-area pt-120">
-				<div class="container">
-					<div class="row justify-content-center">
-						<div class="callto-action-wrap col-lg-12 relative section-gap">
-							<div class="content">
-								<h1>
-									Looking for a <br>
-									quality and affordable interior design?
-								</h1>
-								<p class="mx-auto">
-									inappropriate behavior is often laughed off as “boys will be boys,” women face higher conduct standards especially in the workplace.
-								</p>
-								<a href="#" class="primary-btn text-uppercase">Request quote now</a>			
-							</div>							
-						</div>
+			<!-- Start location Area -->
+				<section class="feature-area section-gap">
+					<div class="container">
+							<div class="col-md-12 pb-40 header-text text-center">
+									<h1 class="pb-10 text-white">Liên hệ</h1>
+									<p class="text-white">
+										Mọi thông tin chi tiết xin vui lòng liên hệ với chúng tôi để được tư vấn tốt nhất 
+									</p>
+							</div>
+							<div>
+									<h3 class="text-white">
+										Hà Nội
+									</h3>
+									<p class="vietnamese text-white ">
+											- Văn phòng công ty: Tầng 3 tòa nhà T6-08, ngõ 643A Phạm Văn Đồng, Từ Liêm, Hà Nội<br>	
+											- Xưởng gỗ 1: Thượng cát, Từ Liêm, Hà Nội<br>												
+											- Xưởng gỗ 2: Khu công nghiệp Nam Thăng Long, Từ Liêm, Hà Nội<br>												
+											- Xưởng tranh kính: Xã Thượng Cát, Từ Liêm, Hà Nội<br>												
+											- Hotline: 097 543 8686 (Mr. Chính) hoặc 098 765 3777 (Mr. Hiệu).
+									</p>
+							</div>
+							<div>
+									<h3 class="text-white">
+										Đà Nẵng 
+									</h3>
+									<p class="vietnamese text-white ">
+											-Địa chỉ: 112 Lê Đình Lý - Quận Hải Châu - Thành phố Đà nẵng<br>
+											-Hotline: 090 852 1777 (Mr. Phú)
+									</p>
+							</div>
+							<div>
+									<h3 class="text-white">
+										Thành Phố Hồ Chí Minh
+									</h3>
+									<p class="vietnamese text-white">
+											-Địa chỉ:  89 Dương Văn An, Khu B, Phường An Phú, Quận 2 ( Phía sau Metro, An Phú )<br>
+											-Xưởng sản xuất: 260 To Ngọc Vân, Phương Linh Đông, Quận Thủ Đức, HCM<br>											
+											-Hotline: 098 635 6789 (Mr. Hoàn)
+									</p>
+							</div>		
 					</div>
-				</div>	
-			</section>
-			<!-- End callto-action Area -->
-								
-			<!-- Start blog Area -->
-			<section class="blog-area section-gap">
-				<div class="container">
-					<div class="row d-flex justify-content-center">
-						<div class="menu-content pb-60 col-lg-9">
-							<div class="title text-center">
-								<h1 class="mb-10">Ongoing Exhibitions from the scratch</h1>
-								<p>Who are in extremely love with eco friendly system.</p>
-							</div>
-						</div>
-					</div>							
-					<div class="row">
-						<div class="active-blog-carusel">
-							<div class="single-blog-post item">
-								<div class="thumb">
-									<img class="img-fluid" src="{{ asset('frontend/img/b1.jpg') }}" alt="">
-								</div>
-								<div class="details">
-									<div class="tags">
-										<ul>
-											<li>
-												<a href="#">Travel</a>
-											</li>
-											<li>
-												<a href="#">Life Style</a>
-											</li>											
-										</ul>
-									</div>
-									<a href="#"><h4 class="title">Low Cost Advertising</h4></a>
-									<p>
-										Acres of Diamonds… you’ve read the famous story, or at least had it related to you. A farmer.
-									</p>
-									<h6 class="date">31st January,2018</h6>
-								</div>	
-							</div>
-							<div class="single-blog-post item">
-								<div class="thumb">
-									<img class="img-fluid" src="{{ asset('frontend/img/b2.jpg') }}" alt="">
-								</div>
-								<div class="details">
-									<div class="tags">
-										<ul>
-											<li>
-												<a href="#">Travel</a>
-											</li>
-											<li>
-												<a href="#">Life Style</a>
-											</li>											
-										</ul>
-									</div>
-									<a href="#"><h4 class="title">Creative Outdoor Ads</h4></a>
-									<p>
-										Acres of Diamonds… you’ve read the famous story, or at least had it related to you. A farmer.
-									</p>
-									<h6 class="date">31st January,2018</h6>
-								</div>	
-							</div>
-							<div class="single-blog-post item">
-								<div class="thumb">
-									<img class="img-fluid" src="{{ asset('frontend/img/b3.jpg') }}" alt="">
-								</div>
-								<div class="details">
-									<div class="tags">
-										<ul>
-											<li>
-												<a href="#">Travel</a>
-											</li>
-											<li>
-												<a href="#">Life Style</a>
-											</li>											
-										</ul>
-									</div>
-									<a href="#"><h4 class="title">It's Classified How To Utilize Free</h4></a>
-									<p>
-										Acres of Diamonds… you’ve read the famous story, or at least had it related to you. A farmer.
-									</p>
-									<h6 class="date">31st January,2018</h6>
-								</div>	
-							</div>	
-							<div class="single-blog-post item">
-								<div class="thumb">
-									<img class="img-fluid" src="{{ asset('frontend/img/b1.jpg') }}" alt="">
-								</div>
-								<div class="details">
-									<div class="tags">
-										<ul>
-											<li>
-												<a href="#">Travel</a>
-											</li>
-											<li>
-												<a href="#">Life Style</a>
-											</li>											
-										</ul>
-									</div>
-									<a href="#"><h4 class="title">Low Cost Advertising</h4></a>
-									<p>
-										Acres of Diamonds… you’ve read the famous story, or at least had it related to you. A farmer.
-									</p>
-									<h6 class="date">31st January,2018</h6>
-								</div>	
-							</div>
-							<div class="single-blog-post item">
-								<div class="thumb">
-									<img class="img-fluid" src="{{ asset('frontend/img/b2.jpg') }}" alt="">
-								</div>
-								<div class="details">
-									<div class="tags">
-										<ul>
-											<li>
-												<a href="#">Travel</a>
-											</li>
-											<li>
-												<a href="#">Life Style</a>
-											</li>											
-										</ul>
-									</div>
-									<a href="#"><h4 class="title">Creative Outdoor Ads</h4></a>
-									<p>
-										Acres of Diamonds… you’ve read the famous story, or at least had it related to you. A farmer.
-									</p>
-									<h6 class="date">31st January,2018</h6>
-								</div>	
-							</div>
-							<div class="single-blog-post item">
-								<div class="thumb">
-									<img class="img-fluid" src="{{ asset('frontend/img/b3.jpg') }}" alt="">
-								</div>
-								<div class="details">
-									<div class="tags">
-										<ul>
-											<li>
-												<a href="#">Travel</a>
-											</li>
-											<li>
-												<a href="#">Life Style</a>
-											</li>											
-										</ul>
-									</div>
-									<a href="#"><h4 class="title">It's Classified How To Utilize Free</h4></a>
-									<p>
-										Acres of Diamonds… you’ve read the famous story, or at least had it related to you. A farmer.
-									</p>
-									<h6 class="date">31st January,2018</h6>
-								</div>	
-							</div>														
-
-						</div>
-					</div>
-				</div>	
-			</section>
-			<!-- End blog Area -->
-
+				</section>
+			<!-- End location Area -->
+			
 			<!-- Start brands Area -->
 			<section class="brands-area pb-60 pt-60">
 				<div class="container no-padding">

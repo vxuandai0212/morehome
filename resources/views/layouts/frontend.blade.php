@@ -27,7 +27,8 @@
         <link rel="stylesheet" href="{{ asset('frontend/css/nice-select.css') }}">							
         <link rel="stylesheet" href="{{ asset('frontend/css/animate.min.css') }}">
         <link rel="stylesheet" href="{{ asset('frontend/css/owl.carousel.css') }}">
-        <link rel="stylesheet" href="{{ asset('frontend/css/main.css') }}">
+		<link rel="stylesheet" href="{{ asset('frontend/css/main.css') }}">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
         
         @yield('css')
 		</head>
@@ -78,10 +79,7 @@
 					<div class="row">
 						<div class="col-lg-5 col-md-6 col-sm-6">
 							<div class="single-footer-widget">
-								<h6>About Us</h6>
-								<p>
-									If you own an Iphone, you’ve probably already worked out how much fun it is to use it to watch movies-it has that.
-								</p>
+								<h6><a style="color:black;" href="{{route('policy')}}">Term & Policy</a></h6>
 								<p class="footer-text"><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
 Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
 <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>								

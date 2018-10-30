@@ -23,6 +23,11 @@ class PageController extends Controller
         return view('frontend.contact');
     }
 
+    public function policy()
+    {
+        return view('frontend.policy');
+    }
+
     public function services()
     {
         return view('frontend.services');
