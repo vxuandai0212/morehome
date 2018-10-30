@@ -100,7 +100,8 @@
 								<div class="row">
 									<div v-if="post.previous_post" class="col-lg-6 col-md-6 col-12 nav-left flex-row d-flex justify-content-start align-items-center">
 										<div class="thumb">
-											<a :href="post.previous_post.view_url"><img class="img-fluid" :src="post.previous_post.avatar_url" alt=""></a>
+											<a v-if="post.previous_post.avatar_url" :href="post.previous_post.view_url"><img class="img-fluid" :src="post.previous_post.avatar_url" alt=""></a>
+											<a v-else :href="post.previous_post.view_url"><img class="img-fluid" src="/images/user/no-avatar-user.png" alt=""></a>
 										</div>
 										<div class="arrow">
 											<a :href="post.previous_post.view_url"><span class="lnr text-white lnr-arrow-left"></span></a>
@@ -119,7 +120,8 @@
 											<a :href="post.next_post.view_url"><span class="lnr text-white lnr-arrow-right"></span></a>
 										</div>
 										<div class="thumb">
-											<a :href="post.next_post.view_url"><img class="img-fluid" :src="post.next_post.avatar_url" alt=""></a>
+											<a v-if="post.next_post.avatar_url" :href="post.next_post.view_url"><img class="img-fluid" :src="post.next_post.avatar_url" alt=""></a>
+											<a v-else :href="post.next_post.view_url"><img class="img-fluid" src="/images/user/no-avatar-user.png" alt=""></a>
 										</div>										
 									</div>									
 								</div>
@@ -208,7 +210,8 @@
 						<div class="col-lg-4 sidebar-widgets">
 							<div class="widget-wrap">
 								<div class="single-sidebar-widget user-info-widget">
-									<img :src="post.author.avatar_url" alt="">
+									<img v-if="post.author.avatar_url" :src="post.author.avatar_url" alt="">
+									<img v-else src="/images/user/no-avatar-user.png" alt="">
 									<a><h4>@{{post.author.name}}</h4></a>
 									<p>
 										@{{post.author.role.name}}
