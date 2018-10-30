@@ -16,6 +16,9 @@ Route::get('/about', 'PageController@about')->name('about');
 
 Route::get('/contact', 'PageController@contact')->name('contact');
 
+//Term and Policy
+Route::get('/policy', 'PageController@policy')->name('policy');
+
 //Services
 Route::get('/services', 'PageController@services')->name('services');
 
