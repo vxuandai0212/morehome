@@ -30,12 +30,6 @@ class Post extends Model
         'slug'
     ];
 
-    protected $attributes = array(
-        'avg_rate' => '',
-        'current_user_has_like' => '',
-        'current_user_has_bookmark' => '',
-        'current_user_rate' => ''
-    );
 
     protected $appends = [
         'avg_rate', 
