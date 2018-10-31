@@ -10,6 +10,61 @@
     margin: auto;
     overflow: visible!important;
 }
+.avatar-upload {
+  position: relative;
+  max-width: 80%;
+  margin: auto;
+}
+.avatar-upload .avatar-edit {
+  position: absolute;
+  right: 12px;
+  z-index: 1;
+  top: 10px;
+}
+.avatar-upload .avatar-edit input {
+  display: none;
+}
+.avatar-upload .avatar-edit input + label {
+  display: inline-block;
+  width: 34px;
+  height: 34px;
+  margin-bottom: 0;
+  border-radius: 100%;
+  background: #FFFFFF;
+  border: 1px solid transparent;
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  font-weight: normal;
+  transition: all 0.2s ease-in-out;
+}
+.avatar-upload .avatar-edit input + label:hover {
+  background: #f1f1f1;
+  border-color: #d6d6d6;
+}
+.avatar-upload .avatar-edit input + label:after {
+  content: "";
+  font-family: "FontAwesome";
+  color: #757575;
+  position: absolute;
+  top: -3px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  margin: auto;
+}
+.avatar-upload .avatar-preview {
+  height: 192px;
+  position: relative;
+  border: 6px solid #F8F8F8;
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
+}
+.avatar-upload .avatar-preview > div {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
 </style>
 <!-- end_summernote_css -->
 @endsection
@@ -52,12 +107,24 @@
                             <el-form-item label="Keywords">
                                 <el-input type="textarea" v-model="post.keywords"></el-input>
                             </el-form-item>
+                            <el-form-item label="Thumbnail">
+                                <div class="avatar-upload">
+                                    <div class="avatar-edit">
+                                        <input type='file' id="imageUpload" @change="onImageChange" accept=".png, .jpg, .jpeg" />
+                                        <label for="imageUpload"></label>
+                                    </div>
+                                    <div class="avatar-preview">
+                                        <div id="imagePreview" :style="{'background-image': 'url(' + post.thumbnail_url + ')'}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </el-form-item>
                             <div id="summernote_wrapper">
                                 <el-form-item label="Content">
                                     <el-input type="textarea"></el-input>
                                 </el-form-item>
                             </div>
-                            <el-form-item label="Tags">
+                            <!-- <el-form-item label="Tags">
                                 <el-select
                                     v-model="post.tags"
                                     multiple
@@ -74,14 +141,14 @@
                                     >
                                     </el-option>
                                 </el-select>
-                            </el-form-item>
-                            <el-form-item label="Category">
+                            </el-form-item> -->
+                            <!-- <el-form-item label="Category">
                                 <el-select v-model="post.category" placeholder="Choose category">
                                     <el-option label="TƯ VẤN" value="ideabooks"></el-option>
                                     <el-option label="DỰ ÁN" value="projects"></el-option>
                                     <el-option label="DỊCH VỤ" value="services"></el-option>
                                 </el-select>
-                            </el-form-item>
+                            </el-form-item> -->
                             <div class="row">
                                 <div class="col-md-6 float-left">
                                     <el-form-item label="Display in Menu">
@@ -158,11 +225,12 @@
             id: {{$post->id}},
             post: {},
             tags: [],
+            edit_thumbnail_is_new: false,
             has_schedule: null,
             updating: false,
         }
       },
-      created: function() {
+      mounted: function() {
         this.init();
       },
       methods: {
@@ -198,21 +266,28 @@
                 });
             }
             var markup = $('#summernote_wrapper textarea').summernote('code');
+            var text_content = markup.replace(/<(?:.|\n)*?>/gm, '');
+            var short_content = text_content.slice(0, 255);
             $('#summernote_wrapper textarea').summernote('destroy');
             $('#summernote_wrapper textarea').summernote({focus: true});
             this.post.content = markup;
+            this.post.text_content = text_content;
+            this.post.short_content = short_content;
             this.updating = true;
             var com = this;
             com.post.status = com.post.status === 'Visible' || com.post.status === 1 ? 1 : 0;
-            axios.put(`/api/posts/${com.id}`, com.post)
+            axios.put(`/api/posts/${com.id}`, {post: com.post, image: com.post.thumbnail_url, thumbnail_is_new: com.edit_thumbnail_is_new})
             .then(function (response) {
                 com.$notify({
                     title: 'Success',
                     message: 'Successful update post',
                     type: 'success'
                 });
+                com.edit_thumbnail_is_new = false;
                 com.updating = false;
-                com.init();
+                setTimeout(function() {
+                    location.reload();
+                }, 1500)
             })
             .catch(function (error) {
                 console.log(error);
@@ -220,6 +295,21 @@
         },
         back() {
             window.location.href = "/posts";
+        },
+        onImageChange(e) {
+            this.edit_thumbnail_is_new = true;
+            let files = e.target.files || e.dataTransfer.files;
+            if (!files.length)
+                return;
+            this.createImage(files[0]);
+        },
+        createImage(file) {
+            let reader = new FileReader();
+            let vm = this;
+            reader.onload = (e) => {
+                vm.post.thumbnail_url = e.target.result;
+            };
+            reader.readAsDataURL(file);
         },
         handleDelete() {
             var com = this;

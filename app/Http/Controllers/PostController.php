@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Post;
 use App\Tag;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+use Cloudder;
 
 class PostController extends Controller
 {
@@ -19,9 +22,19 @@ class PostController extends Controller
         $limit = $request->limit;
         $offset = $request->offset;
         $total = Post::all()->count();
-        $posts = Post::all()->slice($offset)->take($limit);
+        $category = $request->category;
+        $posts;
+        if ($category) {
+            if ($offset) {
+                $posts = Post::with(['tags', 'author'])->withCount(['comments'])->where('category', $category)->skip($offset)->take($limit)->get();
+            } else {
+                $posts = Post::with(['tags', 'author'])->withCount(['comments'])->where('category', $category)->take($limit)->get();
+            }
+        } else {
+            $posts = Post::all()->slice($offset)->take($limit);
+        }
         $posts = $posts->map(function ($post) {
-            $post->created_at_carbon = $post->created_at->diffForHumans();
+            $post->created_at_carbon = Carbon::parse($post->created_at) || $post->created_at->diffForHumans();
             if ($post->status == 1) {
                 $post->status = 'Active';
                 return $post;
@@ -51,6 +64,14 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+        if($request->get('image'))
+        {
+           $image = $request->get('image');
+           Cloudder::upload($image);
+        }
+        $result = Cloudder::getResult();
+        $image_url = $result['url'];
+        
         $post = new Post;
 
         $post->name = $request->name;
@@ -64,6 +85,9 @@ class PostController extends Controller
         $post->view_url = '/'.$request->category.'/'.str_slug($request->title);
         $post->edit_url = '/posts/edit/'.str_slug($request->title);
         $post->content = $request->content;
+        $post->text_content = $request->text_content;
+        $post->short_content = $request->short_content;
+        $post->thumbnail_url = $image_url;
         $post->status = $request->page_status;
         $post->created_by = Auth::user()->username;
 
@@ -133,22 +157,38 @@ class PostController extends Controller
      */
     public function update(Request $request)
     {
-        $post = Post::find($request->id);
-        $post->name = $request->name;
-        $post->title = $request->title;
-        $post->description = $request->description;
-        $post->keywords = $request->keywords;
-        $post->category = $request->category;
-        $post->display_in_menu = $request->display_in_menu;
-        $post->scheduling_post = $request->scheduling_post;
-        $post->view_url = '/'.$request->category.'/'.str_slug($request->title);
-        $post->edit_url = '/posts/edit/'.str_slug($request->title);
-        $post->slug = str_slug($request->title);
-        $post->content = $request->content;
-        $post->status = $request->status;
+        $image_url = '';
+        if ($request->thumbnail_is_new) {
+            if($request->get('image'))
+            {
+            $image = $request->get('image');
+            Cloudder::upload($image);
+            }
+            $result = Cloudder::getResult();
+            $image_url = $result['url'];
+        }
+
+        $post = Post::find($request->post['id']);
+        $post->name = $request->post['name'];
+        $post->title = $request->post['title'];
+        $post->description = $request->post['description'];
+        $post->keywords = $request->post['keywords'];
+        $post->category = $request->post['category'];
+        $post->display_in_menu = $request->post['display_in_menu'];
+        $post->scheduling_post = $request->post['scheduling_post'];
+        $post->view_url = '/'.$request->post['category'].'/'.str_slug($request->post['title']);
+        $post->edit_url = '/posts/edit/'.str_slug($request->post['title']);
+        $post->slug = str_slug($request->post['title']);
+        $post->content = $request->post['content'];
+        $post->text_content = $request->post['text_content'];
+        $post->short_content = $request->post['short_content'];
+        if ($image_url != '') {
+            $post->thumbnail_url = $image_url;
+        }
+        $post->status = $request->post['status'];
         $post->save();
 
-        $post->tags()->sync($request->tags);
+        $post->tags()->sync($request->post['tags']);
 
         return response()->json($post, 201);
     }

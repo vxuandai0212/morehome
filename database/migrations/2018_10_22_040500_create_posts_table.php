@@ -28,6 +28,9 @@ class CreatePostsTable extends Migration
             $table->char('view_url', 100);
             $table->char('edit_url', 100);
             $table->text('content');
+            $table->text('text_content');
+            $table->text('short_content');
+            $table->char('thumbnail_url', 255)->nullable();
             $table->boolean('status')->default(1);
             $table->char('created_by', 50);
             $table->timestamps();

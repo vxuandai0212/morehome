@@ -17,6 +17,7 @@
 @endsection
 
 @section('content')
+		<div id="app">
             <!-- start banner Area -->
             <section class="banner-area relative" id="home">	
 				<div class="overlay overlay-bg"></div>
@@ -24,9 +25,9 @@
 					<div class="row d-flex align-items-center justify-content-center">
 						<div class="about-content col-lg-12">
 							<h1 class="text-white">
-								Project Details				
+								@{{post.title}}				
 							</h1>	 
-							<p class="text-white link-nav"><a href="index.html">Home </a>  <span class="lnr lnr-arrow-right"></span>  <a href="projects-details.html"> Project Details</a></p>
+							<p class="text-white link-nav"><a href="{{route('home')}}">Home </a>  <span class="lnr lnr-arrow-right"></span>  <a :href="post.view_url"> @{{post.title}}</a></p>
 						</div>	
 					</div>
 				</div>
@@ -38,13 +39,12 @@
 				<div class="container">
 					<div class="row align-items-center">
 						<div class="col-lg-6 project-details-left">
-							<img class="img-fluid" src="{{ asset('frontend/img/project-details.jpg') }}" alt="">
+							<img v-if="post.thumbnail_url" class="img-fluid" :src="post.thumbnail_url" alt="post.title">
+							<img v-else class="img-fluid" src="{{ asset('frontend/img/project-details.jpg') }}" alt="">
 						</div>
 						<div class="col-lg-6 project-details-right">
-							<h3 class="pb-20">Lavendar ambient interior</h3>
-							<p>
-								Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.
-							</p>
+							<h3 class="pb-20">@{{post.title}}</h3>
+							<p>@{{post.description}}</p>
 							<div class="details-info d-flex flex-row">
 								<ul class="names">
 									<li>Rating    </li>
@@ -76,12 +76,7 @@
 							</div>														
 						</div>
 						<div class="col-lg-12 project-desc mt-60">
-							<p>
-								Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit.
-								<br>
-								<br>
-								Voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.
-							</p>
+							<div v-html="post.content"></div>
 						</div>
 					</div>
 				</div>	
@@ -112,5 +107,37 @@
 					</div>
 				</div>	
 			</section>
-			<!-- End brands Area -->				
+			<!-- End brands Area -->			
+		</div>	
+@endsection
+
+@section('script')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script>
+	$( document ).ready(function() {
+		var app = new Vue({
+			el: '#app',
+			created: function() {
+				this.init();
+			},
+			data: {
+				post_id: `{{$post_id}}`,
+				post: {}
+			},
+			methods: {
+				init() {
+					var com = this;
+					axios.get(`/api/posts/${com.post_id}`)
+					.then(function (response) {
+						com.post = response.data;
+					})
+					.catch(function (error) {
+						console.log(error);
+					});
+				},
+			}
+		})
+    });
+</script>
 @endsection

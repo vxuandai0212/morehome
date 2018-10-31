@@ -114,7 +114,7 @@
 						<div class="col-lg-6 col-md-6">
 							<div class="single-feature">
 								<a href="#" class="title d-flex justify-content-center">
-									<span class="lnr fas fa-pencil-ruler"></span>
+									<span class="lnr lnr-pencil"></span>
 									<h4 class="vietnamese">Thiết kế nội thất</h4>
 								</a>
 							</div>
@@ -122,7 +122,7 @@
 						<div class="col-lg-6 col-md-6">
 							<div class="single-feature">
 								<a href="#" class="title d-flex justify-content-center">
-									<span class="lnr fas fa-home"></span>
+									<span class="lnr lnr-home"></span>
 									<h4 class="vietnamese">Thiết kế kiến trúc</h4>
 								</a>
 							</div>
@@ -130,7 +130,7 @@
 						<div class="col-lg-6 col-md-6">
 							<div class="single-feature">
 								<a href="#" class="title d-flex justify-content-center">
-									<span class="lnr fas fa-couch"></span>
+									<span class="lnr lnr-funnel"></span>
 									<h4 class="vietnamese">Thi công nội thất</h4>
 								</a>
 							</div>
@@ -138,7 +138,7 @@
 						<div class="col-lg-6 col-md-6">
 							<div class="single-feature">
 								<a href="#" class="title d-flex justify-content-center">
-									<span class="lnr fas fa-box-open"></span> 
+									<span class="lnr lnr-inbox"></span>
 									<h4 class="vietnamese">Sản xuất nội thất</h4>
 								</a>
 							</div>

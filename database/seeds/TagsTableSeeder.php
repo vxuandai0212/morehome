@@ -12,6 +12,10 @@ class TagsTableSeeder extends Seeder
     public function run()
     {
         $tags = array(
+            'Thiết kế nội thất',
+            'Thi công nội thất',
+            'Thiết kế kiến trúc',
+            'Sản xuất nội thất',
             'KITCHEN & DINING',
             'Kitchen',
             'Dining Room',

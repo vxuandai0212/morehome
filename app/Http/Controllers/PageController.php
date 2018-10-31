@@ -40,17 +40,18 @@ class PageController extends Controller
 
     public function projects()
     {
-        return view('frontend.blog_home');
+        return view('frontend.blog_home', ['category' => 'projects']);
     }
 
     public function project($project_slug)
     {
-        return view('frontend.project_details');
+        $post = Post::where('slug', $project_slug)->first();
+        return view('frontend.project_details',['post_id' => $post->id]);
     }
 
     public function ideabooks()
     {
-        return view('frontend.blog_home');
+        return view('frontend.blog_home', ['category' => 'ideabooks']);
     }
 
     public function ideabook($ideabook_slug)

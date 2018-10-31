@@ -34,6 +34,9 @@ class PostsTableSeeder extends Seeder
                 'view_url' => '/'.$category.'/'.str_slug($title),
                 'edit_url' => '/posts/edit/'.str_slug($title),
                 'content' => '<div>'.$faker->paragraph.'</div>',
+                'short_content' => $faker->paragraph,
+                'text_content' => $faker->paragraph,
+                'thumbnail_url' => null,
                 'status' => 1,
                 'created_by' => 'vxuandai',
             ]);
