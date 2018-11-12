@@ -13,7 +13,7 @@
 @endsection
 
 @section('title')
-<title>Interior</title>
+<title>Dịch vụ</title>
 @endsection
 
 @section('content')
@@ -24,9 +24,9 @@
 					<div class="row d-flex align-items-center justify-content-center">
 						<div class="about-content col-lg-12">
 							<h1 class="text-white">
-								Services				
+								Dịch vụ				
 							</h1>	
-							<p class="text-white link-nav"><a href="index.html">Home </a>  <span class="lnr lnr-arrow-right"></span>  <a href="services.html"> Services</a></p>
+							<p class="text-white link-nav"><a href="{{route('home')}}">Trang chủ </a>  <span class="lnr lnr-arrow-right"></span>  <a href="{{route('services')}}"> Dịch vụ</a></p>
 						</div>	
 					</div>
 				</div>
@@ -38,37 +38,45 @@
 				<div class="container">
 					<div class="row justify-content-center">
 						<div class="col-md-12 pb-50 header-text text-center">
-							<h1 class="mb-10">What we offer to our clients</h1>
+							<h1 class="mb-10">Chúng tôi cung cấp những gì cho khách hàng</h1>
 							<p>
-								Who are in extremely love with eco friendly system..
+								Chúng tôi tạo nên một hệ sinh thái thân thiện và hiện đại.
 							</p>
 						</div>
 					</div>						
 					<div class="row">
-						<div class="col-lg-4">
+						<div class="col-lg-3">
 							<div class="single-service">
-								<a href="#"><h4>Interior Design</h4></a>
-								<p>
-									Sony laptops are among the most well known laptops on today’s market. Sony is a name that over time has established itself as creating a solid product.
+								<a href="/projects?tag=Thiết kế nội thất"><h4>Thiết kế nội thất</h4></a>
+								<p style="height:200px;">
+									Từ ý tưởng đến hiện thực về một không gian sống trong mơ - Đó là nhiệm vụ của Morehome
 								</p>
 							</div>
 						</div>	
-						<div class="col-lg-4">
+						<div class="col-lg-3">
 							<div class="single-service">
-								<a href="#"><h4>Architecture Design</h4></a>
-								<p>
-									Computer users and programmers have become so accustomed to using Windows, even for the changing capabilities and the appearances of the graphical.
+								<a href="/ideabooks?tag=Thiết kế nhà đẹp"><h4>Thiết kế nhà đẹp</h4></a>
+								<p style="height:200px;">
+									Bạn đang muốn công ty thiết kế nhà đẹp tư vấn thiết kế nhà miễn phí, bạn đang cần đơn vị Uy Tín thiết kế nhà đẹp tại Đà Nẵng, Hà Nội, Tp. Hồ Chí Minh và có khả năng thi công xây nhà trọn gói giá rẻ, hoàn thiện nội thất chuẩn theo chi phí đầu tư.
 								</p>
 							</div>
 						</div>	
-						<div class="col-lg-4">
+						<div class="col-lg-3">
 							<div class="single-service">
-								<a href="#"><h4>Concept Design</h4></a>
-								<p>
-									Can you imagine what we will be downloading in another twenty years? I mean who would have ever thought that you could record sound.
+								<a href="/ideabooks?tag=Thi công nội thất"><h4>Thi công nội thất</h4></a>
+								<p style="height:200px;">
+									Morehome là một trong những công ty chuyên thiết kế thi công nội thất chuyên nghiệp
 								</p>
 							</div>
-						</div>																													
+						</div>	
+						<div class="col-lg-3">
+							<div class="single-service">
+								<a href="/ideabooks?tag=Sản xuất nội thất"><h4>Sản xuất nội thất</h4></a>
+								<p style="height:200px;">
+									Được thành lập vào năm 2009, Công ty cổ phần Morehome được biết đến là một đơn vị chuyên sâu trong lĩnh vực tư vấn thiết kế nội thất và thi công nội thất và sản xuất nội thất hàng đầu tại Việt Nam.
+								</p>
+							</div>
+						</div>																												
 					</div>
 				</div>	
 			</section>
@@ -79,76 +87,76 @@
 				<div class="container">
 					<div class="row d-flex justify-content-center">
 						<div class="col-md-12 pb-40 header-text text-center">
-							<h1 class="pb-10 text-white">Some Features that Made us Unique</h1>
+							<h1 class="pb-10 text-white">Những tiêu chí tạo nên sự khác biệt</h1>
 							<p class="text-white">
-								Who are in extremely love with eco friendly system.
+								Làm việc chuyên nghiệp, đặt sự hài lòng của khách hàng là ưu tiên hàng đầu
 							</p>
 						</div>
 					</div>							
 					<div class="row">
 						<div class="col-lg-4 col-md-6">
 							<div class="single-feature">
-								<a href="#" class="title d-flex flex-row align-items-center">
+								<a class="title d-flex flex-row align-items-center">
 									<span class="lnr lnr-user"></span>
-									<h4>Expert Technicians</h4>
+									<h4>Chuyên gia thiết kế</h4>
 								</a>
-								<p>
-									Computer users and programmers have become so accustomed to using Windows, even for the changing.
+								<p style="height:65px;">
+								Luôn cập nhật xu thế của thế giới, đem lại những thiết kế hiện đại, tiện lợi
 								</p>
 							</div>
 						</div>
 						<div class="col-lg-4 col-md-6">
 							<div class="single-feature">
-								<a href="#" class="title d-flex flex-row align-items-center">
+								<a class="title d-flex flex-row align-items-center">
 									<span class="lnr lnr-license"></span>
-									<h4>Professional Service</h4>
+									<h4>Dịch vụ chuyên nghiệp</h4>
 								</a>
-								<p>
-									Finding the perfect learning tool for Flash is a daunting task to any novice web developer. One can find help.
+								<p style="height:80px;">
+								Chúng tôi có 20 năm kinh nghiệm đảm bảo sự hài lòng của khách hàng
 								</p>
 							</div>
 						</div>
 						<div class="col-lg-4 col-md-6">
 							<div class="single-feature">
-								<a href="#" class="title d-flex flex-row align-items-center">
+								<a class="title d-flex flex-row align-items-center">
 									<span class="lnr lnr-phone"></span>
-									<h4>Great Support</h4>
+									<h4>Hỗ trợ nhiệt tình</h4>
 								</a>
-								<p>
-									While most people enjoy casino ambling, sports betting, lottery and bingo playing for the fun and excitement.
+								<p style="height:65px;">
+								Đội ngũ tư vấn của chúng tôi sẽ góp ý cho bạn những sản phẩm tốt nhất cũng như hỗ trợ sau khi mua hàng
 								</p>
 							</div>
 						</div>						
 						<div class="col-lg-4 col-md-6">
 							<div class="single-feature">
-								<a href="#" class="title d-flex flex-row align-items-center">
+								<a class="title d-flex flex-row align-items-center">
 									<span class="lnr lnr-rocket"></span>
-									<h4>Technical Skills</h4>
+									<h4>Đội ngũ nhân viên tay nghề cao</h4>
 								</a>
-								<p>
-									“The moment you think of buying a Web Hosting Plan, you know one thing – So many choices, which one to choose.
+								<p style="height:45px;">
+									Nhân viên của công ty được đào tạo bài bản, có kinh nghiệm lâu năm
 								</p>
 							</div>
 						</div>
 						<div class="col-lg-4 col-md-6">
 							<div class="single-feature">
-								<a href="#" class="title d-flex flex-row align-items-center">
+								<a class="title d-flex flex-row align-items-center">
 									<span class="lnr lnr-diamond"></span>
-									<h4>Highly Recomended</h4>
+									<h4>Khách hàng tin cậy</h4>
 								</a>
-								<p>
-									Many conventional colleges and universities are now offering online DVD repair courses, which are the exact same.
+								<p style="height:80px;">
+									Chúng tôi có kinh nghiệm phục vụ lâu năm và được nhiều khách hàng giới thiệu
 								</p>
 							</div>
 						</div>
 						<div class="col-lg-4 col-md-6">
 							<div class="single-feature">
-								<a href="#" class="title d-flex flex-row align-items-center">
+								<a class="title d-flex flex-row align-items-center">
 									<span class="lnr lnr-bubble"></span>
-									<h4>Positive Reviews</h4>
+									<h4>Đánh giá tích cực</h4>
 								</a>
-								<p>
-									So you have your new digital camera and clicking away to glory anything and everything in sight. Now you want.
+								<p style="height:65px;">
+								Chúng tôi không ngừng cố gắng hoàn thiện đem đến dịch vụ tốt nhất
 								</p>
 							</div>
 						</div>	
@@ -165,13 +173,13 @@
 						<div class="callto-action-wrap col-lg-12 relative section-gap">
 							<div class="content">
 								<h1>
-									Looking for a <br>
-									quality and affordable interior design?
+									Bạn đang tìm kiếm một  <br>
+									thiết kế chất lượng và giá cả phải chăng?
 								</h1>
 								<p class="mx-auto">
-									inappropriate behavior is often laughed off as “boys will be boys,” women face higher conduct standards especially in the workplace.
+								Hãy tìm cho mình một ngôi nhà mơ ước với dịch vụ của chúng tôi.
 								</p>
-								<a href="#" class="primary-btn text-uppercase">Request quote now</a>			
+								<a href="/ideabooks" class="primary-btn text-uppercase">Tham khảo ngay</a>			
 							</div>							
 						</div>
 					</div>
@@ -185,19 +193,19 @@
 					<div class="brand-wrap">
 						<div class="row align-items-center active-brand-carusel justify-content-start no-gutters">
 							<div class="col single-brand">
-								<a href="#"><img class="mx-auto" src="{{ asset('frontend/img/l1.png') }}" alt=""></a>
+								<a><img class="mx-auto" src="{{ asset('frontend/img/l1.png') }}" alt=""></a>
 							</div>
 							<div class="col single-brand">
-								<a href="#"><img class="mx-auto" src="{{ asset('frontend/img/l2.png') }}" alt=""></a>
+								<a><img class="mx-auto" src="{{ asset('frontend/img/l2.png') }}" alt=""></a>
 							</div>
 							<div class="col single-brand">
-								<a href="#"><img class="mx-auto" src="{{ asset('frontend/img/l3.png') }}" alt=""></a>
+								<a><img class="mx-auto" src="{{ asset('frontend/img/l3.png') }}" alt=""></a>
 							</div>
 							<div class="col single-brand">
-								<a href="#"><img class="mx-auto" src="{{ asset('frontend/img/l4.png') }}" alt=""></a>
+								<a><img class="mx-auto" src="{{ asset('frontend/img/l4.png') }}" alt=""></a>
 							</div>
 							<div class="col single-brand">
-								<a href="#"><img class="mx-auto" src="{{ asset('frontend/img/l5.png') }}" alt=""></a>
+								<a><img class="mx-auto" src="{{ asset('frontend/img/l5.png') }}" alt=""></a>
 							</div>								
 						</div>																			
 					</div>

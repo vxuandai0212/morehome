@@ -21,6 +21,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\UserViewedPost' => [
             'App\Listeners\IncreasePostView',
         ],
+        'App\Events\UserCommentedPost' => [
+            'App\Listeners\IncreaseCommentCount',
+        ],
     ];
 
     /**

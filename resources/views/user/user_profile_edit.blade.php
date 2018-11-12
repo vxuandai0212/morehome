@@ -86,7 +86,12 @@
                     <div class="card-header">
                         <div class="d-flex flex-row-reverse">
                             <div class="p-2"></div>
-                            <div class="p-2"><el-button type="primary" @click="update()">Update</el-button></div>
+                            <div v-if="!loading" class="p-2">
+                                <el-button type="primary" @click="update()">Update</el-button>
+                            </div>
+                            <div v-else class="p-2">
+                                <el-button disabled type="primary">Updating</el-button>
+                            </div>
                             <div class="p-2"><el-button type="default" @click="go_users()">Back</el-button></div>
                         </div>
                     </div>
@@ -176,17 +181,20 @@
         return {
             user: {},
             user_slug: `{{$user_slug}}`,
+            user_id: `{{$user_id}}`,
             image: '',
-            roles: []
+            image_is_new: false,
+            roles: [],
+            loading: false
         }
       },
       methods: {
         init() {
             var com = this;
             //get user
-            axios.get(`/api/users/${com.user_slug}`)
+            axios.get(`/api/users/${com.user_id}`)
             .then(function (response) {
-                var user = response.data[0];
+                var user = response.data;
                 user.status == 1 ? user.status = true : user.status = false;
                 com.user = user;
             })
@@ -204,6 +212,7 @@
             });
         },
         onImageChange(e) {
+            this.image_is_new = true;
             let files = e.target.files || e.dataTransfer.files;
             if (!files.length)
                 return;
@@ -225,13 +234,15 @@
         },
         update() { 
             var com = this;
-            axios.put(`/api/users/${com.user_slug}`, {user: com.user, image: com.image})
+            com.loading = true;
+            axios.put(`/api/users/${com.user_slug}`, {user: com.user, image: com.image, image_is_new: com.image_is_new})
             .then(function (response) {
                 com.$notify({
                     title: 'Success',
                     message: 'Successful update user',
                     type: 'success'
                 });
+                com.loading = false;
                 setTimeout(function(){
                     location = `/users`
                 },2000)

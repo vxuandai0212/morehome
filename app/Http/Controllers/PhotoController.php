@@ -8,9 +8,20 @@ use App\Category;
 use App\Tag;
 use Illuminate\Support\Facades\Auth;
 use Cloudder;
+use Illuminate\Support\Facades\DB;
 
 class PhotoController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth')->except('index', 'photo_in_project');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -20,8 +31,45 @@ class PhotoController extends Controller
     {
         $limit = $request->limit;
         $offset = $request->offset;
-        $total = Photo::where('album_id', $request->album_id)->count();
-        $photos = Photo::with(['categories:name','tags:name'])->where('album_id', $request->album_id)->get()->slice($offset)->take($limit);
+        $name = $request->name;
+        $categories_id = $request->categories_id;
+        $tags_id = $request->tags_id;
+
+        $photos = Photo::where('album_id', $request->album_id)
+        ->with(['categories','tags'])
+        ->when($name, function ($query, $name) {
+            return $query->where('name', 'like', '%'.$name.'%');
+        })
+        ->when($categories_id, function ($query, $categories_id) {
+            return $query->whereHas('categories', function ($query) use ($categories_id) {
+                $query->whereIn('categories.id', $categories_id);
+            }, ">=", count($categories_id));
+        })
+        ->when($tags_id, function ($query, $tags_id) {
+            return $query->whereHas('tags', function ($query) use ($tags_id) {
+                $query->whereIn('tags.id', $tags_id);
+            }, ">=", count($tags_id));
+        })
+        ->orderBy('created_at', 'desc')
+        ->customPaginate($limit, $offset)
+        ->get();
+
+        $total = Photo::where('album_id', $request->album_id)
+        ->when($name, function ($query, $name) {
+            return $query->where('name', 'like', '%'.$name.'%');
+        })
+        ->when($categories_id, function ($query, $categories_id) {
+            return $query->whereHas('categories', function ($query) use ($categories_id) {
+                $query->whereIn('categories.id', $categories_id);
+            }, ">=", count($categories_id));
+        })
+        ->when($tags_id, function ($query, $tags_id) {
+            return $query->whereHas('tags', function ($query) use ($tags_id) {
+                $query->whereIn('tags.id', $tags_id);
+            }, ">=", count($tags_id));
+        })
+        ->count();
+        
         $photos = $photos->map(function ($photo) {
             $photo->created_at_carbon = $photo->created_at->diffForHumans();
             if ($photo->status == 1) {
@@ -107,26 +155,9 @@ class PhotoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $categories = $request->photo['categories'];
-        $categories_id = collect($categories)->map(function($category) {
-            if (gettype($category) == 'string') {
-                $category_id = Category::where('name', $category)->first();
-                return $category_id['id'];
-            } else {
-                return $category;
-            }
-        })->unique();
+        $categories_id = $request->photo['categories'];
+        $tags_id = $request->photo['tags'];
 
-        $tags = $request->photo['tags'];
-        $tags_id = collect($tags)->map(function($tag) {
-            if (gettype($tag) == 'string') {
-                $tag_id = Tag::where('name', $tag)->first();
-                return $tag_id['id'];
-            } else {
-                return $tag;
-            }
-        })->unique();
-        
         $image_url = '';
         if ($request->photo_is_new) {
             if($request->get('image'))
@@ -164,5 +195,19 @@ class PhotoController extends Controller
         $photo->delete();
 
         return response()->json(null, 204);
+    }
+
+    public function photo_in_project(Request $request)
+    {
+        $post_id = $request->post_id;
+
+        $photos = DB::table('posts')
+        ->join('albums', 'posts.id', '=', 'albums.post_id')
+        ->join('photos', 'albums.id', '=', 'photos.album_id')
+        ->select('photos.image_url')
+        ->where('posts.id', $post_id)
+        ->get();
+
+        return response()->json($photos, 201);
     }
 }

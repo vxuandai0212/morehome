@@ -41,7 +41,7 @@ class Post extends Model
         'current_user_rate',
         'previous_post',
         'next_post',
-        'top_four',
+        'top_four'
     ];
 
     public function sluggable()
@@ -53,6 +53,11 @@ class Post extends Model
         ];
     }
 
+    public function id()
+    {
+        return $this->id;
+    }
+    
     public function author()
     {
         return $this->belongsTo('App\User', 'created_by', 'username');
@@ -90,17 +95,29 @@ class Post extends Model
 
     public function getCurrentUserHasLikeAttribute()
     {
-        return ActivityLog::select('activity_logs.id')->where('post_id', $this->id)->where('root_user_id', Auth::user()->id)->where('action_type_id', 16)->get();
+        if (Auth::check()) {
+            return ActivityLog::select('activity_logs.id')->where('post_id', $this->id)->where('root_user_id', Auth::user()->id)->where('action_type_id', 16)->get();
+        } else {
+            return [];
+        }
     }
 
     public function getCurrentUserHasBookmarkAttribute()
     {
-        return ActivityLog::select('activity_logs.id')->where('post_id', $this->id)->where('root_user_id', Auth::user()->id)->where('action_type_id', 18)->get();
+        if (Auth::check()) {
+            return ActivityLog::select('activity_logs.id')->where('post_id', $this->id)->where('root_user_id', Auth::user()->id)->where('action_type_id', 18)->get();
+        } else {
+            return [];
+        }
     }
 
     public function getCurrentUserRateAttribute()
     {
-        return ActivityLog::select('activity_logs.id','activity_logs.rate')->where('post_id', $this->id)->where('root_user_id', Auth::user()->id)->where('action_type_id', 20)->get();
+        if (Auth::check()) {
+            return ActivityLog::select('activity_logs.id','activity_logs.rate')->where('post_id', $this->id)->where('root_user_id', Auth::user()->id)->where('action_type_id', 20)->get();
+        } else {
+            return [];
+        }
     }
 
     public function getAvgRateAttribute()
@@ -134,11 +151,20 @@ class Post extends Model
     public function getTopFourAttribute()
     {
         $posts = DB::table('posts')
-        ->select('title', 'view_url', 'created_at')
+        ->select('title', 'view_url', 'thumbnail_url', 'created_at')
         ->where('posts.category', $this->category)
         ->orderBy('view_count', 'desc')
         ->take(5)
         ->get();
         return $posts;
+    }
+
+    public function scopeCustomPaginate($query, $limit, $offset)
+    {
+        if ($offset != 0) {
+            return $query->skip($offset)->take($limit);
+        } else {
+            return $query->take($limit);
+        }
     }
 }

@@ -9,9 +9,21 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Cloudder;
+use App\Jobs\PublishPost;
+use App\ActivityLog;
 
 class PostController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth')->except(['index', 'search', 'show', 'get_name', 'get_random']);;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -21,20 +33,51 @@ class PostController extends Controller
     {
         $limit = $request->limit;
         $offset = $request->offset;
-        $total = Post::all()->count();
+        $name = $request->name;
+        $author = $request->author;
         $category = $request->category;
-        $posts;
-        if ($category) {
-            if ($offset) {
-                $posts = Post::with(['tags', 'author'])->withCount(['comments'])->where('category', $category)->skip($offset)->take($limit)->get();
-            } else {
-                $posts = Post::with(['tags', 'author'])->withCount(['comments'])->where('category', $category)->take($limit)->get();
-            }
-        } else {
-            $posts = Post::all()->slice($offset)->take($limit);
+        $posted = $request->posted;
+        $tag = $request->tag;
+
+        $matches = array();
+        if ($name) {
+            $matches["name"] = $name;
         }
+        if ($author) {
+            $matches["created_by"] = $author;
+        }
+        if ($category) {
+            $matches["category"] = $category;
+        }
+        
+        $posts = Post::with(['tags', 'author'])->withCount(['comments'])->where($matches)
+        ->when($posted, function ($query, $role) {
+            return $query->where('scheduling_post', '<=', Carbon::now()->timestamp * 1000);
+        })
+        ->when(Auth::check() && Auth::user()->role_id == 2, function ($query) {
+            return $query->where('created_by', Auth::user()->username);
+        })
+        ->when($tag, function ($query, $tag) {
+            return $query->whereHas('tags', function ($query) use ($tag) {
+                $query->where('tags.name', $tag);
+            });
+        })
+        ->orderBy('created_at', 'desc')->customPaginate($limit, $offset)->get();
+    
+
+        $total = Post::where($matches)
+        ->when(Auth::check() && Auth::user()->role_id == 2, function ($query) {
+            return $query->where('created_by', Auth::user()->username);
+        })
+        ->when($tag, function ($query, $tag) {
+            return $query->whereHas('tags', function ($query) use ($tag) {
+                $query->where('tags.name', $tag);
+            });
+        })
+        ->count();
+
         $posts = $posts->map(function ($post) {
-            $post->created_at_carbon = Carbon::parse($post->created_at) || $post->created_at->diffForHumans();
+            $post->created_at_carbon = Carbon::parse($post->created_at)->diffForHumans();
             if ($post->status == 1) {
                 $post->status = 'Active';
                 return $post;
@@ -97,6 +140,13 @@ class PostController extends Controller
             $tag = Tag::firstOrCreate(['name' => $tag]);
             $post->tags()->attach($tag->id);
         }
+
+        $activity_log = new ActivityLog;
+        $activity_log->root_user_id = Auth::user()->id;
+        $activity_log->post_id = $post->id;
+        $activity_log->action_type_id = 7;
+
+        return response()->json($post, 201);
     }
 
     /**
@@ -111,9 +161,6 @@ class PostController extends Controller
             'author',
             'author.role',
             'tags:id', 
-            'comments.users:name', 
-            'comments.replies', 
-            'comments.replies.users:name',
             'likes' => function ($query) {
                 $query->select('users.id');
             },
@@ -205,5 +252,38 @@ class PostController extends Controller
         $post->delete();
 
         return response()->json(null, 204);
+    }
+
+    public function search(Request $request)
+    {
+        $name = $request->name;
+        $posts = Post::select('id','name')->where('name','like','%'.$name.'%')
+        ->when(Auth::check() && Auth::user()->role_id == 2, function ($query) {
+            return $query->where('created_by', Auth::user()->username);
+        })
+        ->limit(20)->get();
+        
+        return response()->json($posts, 200);
+    }
+
+    public function get_name($post_id)
+    {
+        $post = Post::find($post_id);
+        return response()->json($post->name, 200);
+    }
+
+    public function get_random(Request $request)
+    {
+        $limit = $request->limit;
+        $offset = $request->offset;
+        $category = $request->category;
+        
+        $posts = Post::with(['tags'])
+        ->where('scheduling_post', '<=', Carbon::now()->timestamp * 1000)
+        ->where('category', $category)
+        ->orderBy(DB::raw('RAND()'))
+        ->customPaginate($limit, $offset)->get();
+        
+        return response()->json($posts, 200);
     }
 }

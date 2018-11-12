@@ -24,7 +24,7 @@ class CreateActivityLogsTable extends Migration
             $table->unsignedInteger('album_id')->nullable();
             $table->foreign('album_id')->references('id')->on('albums');
             $table->unsignedInteger('post_id')->nullable();
-            $table->foreign('post_id')->references('id')->on('posts');
+            $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
             $table->unsignedInteger('comment_id')->nullable();
             $table->foreign('comment_id')->references('id')->on('comments');
             $table->unsignedInteger('action_type_id')->nullable();

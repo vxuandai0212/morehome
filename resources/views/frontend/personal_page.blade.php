@@ -23,7 +23,9 @@
 				<div class="container">
 					<div class="row d-flex align-items-center justify-content-center">
 						<div class="about-content col-lg-12">
-
+							<h1 class="text-white">
+								Trang cá nhân
+							</h1>
 						</div>
 					</div>
 				</div>
@@ -35,7 +37,10 @@
 			<section class="post-content-area pt-90 pb-90" id="app">
 				<div class="container">
 					<div class="row">
-						<div v-if="user.posts" class="col-lg-8 posts-list">
+						<div v-if="user.posts.length != 0" class="col-lg-8 posts-list">
+							<div class="pb-50 header-text text-center">
+								<h1>Những bài viết mà bạn yêu thích</h1>
+							</div>
 							<div v-for="post in user.posts" class="single-post row">
 								<div class="col-lg-3  col-md-3 meta-details">
 									<ul v-if="post.tags" class="tags">
@@ -50,52 +55,27 @@
 								</div>
 								<div class="col-lg-9 col-md-9 ">
 									<div class="feature-img">
-										<img class="img-fluid" src="img/blog/feature-img1.jpg" alt="">
+										<img class="img-fluid" :src="post.thumbnail_url" alt="post.title">
 									</div>
-									<a class="posts-title" href="blog-single.html"><h3>@{{post.title}}</h3></a>
+									<a class="posts-title" :href="post.view_url"><h3>@{{post.title}}</h3></a>
 									<p class="excert">
 										@{{post.short_content}}
 									</p>
 									<a :href="post.view_url" class="primary-btn">View More</a>
 								</div>
 							</div>
-		                    <nav class="blog-pagination justify-content-center d-flex">
-		                        <ul class="pagination">
-		                            <li class="page-item">
-		                                <a href="#" class="page-link" aria-label="Previous">
-		                                    <span aria-hidden="true">
-		                                        <span class="lnr lnr-chevron-left"></span>
-		                                    </span>
-		                                </a>
-		                            </li>
-		                            <li class="page-item active"><a href="#" class="page-link">01</a></li>
-		                            <li class="page-item"><a href="#" class="page-link">02</a></li>
-		                            <li class="page-item"><a href="#" class="page-link">03</a></li>
-		                            <li class="page-item"><a href="#" class="page-link">04</a></li>
-		                            <li class="page-item"><a href="#" class="page-link">09</a></li>
-		                            <li class="page-item">
-		                                <a href="#" class="page-link" aria-label="Next">
-		                                    <span aria-hidden="true">
-		                                        <span class="lnr lnr-chevron-right"></span>
-		                                    </span>
-		                                </a>
-		                            </li>
-		                        </ul>
-		                    </nav>
 						</div>
+						<div v-else class="col-lg-8 posts-list"><h1>Không có bài viết nào được bookmark.</h1></div>
 						<div class="col-lg-4 sidebar-widgets">
 							<div class="widget-wrap">
-								<div class="single-sidebar-widget search-widget">
-									<form class="search-form" action="#">
-			                            <input placeholder="Search Posts" name="search" type="text" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Search Posts'" >
-			                            <button type="submit"><i class="fa fa-search"></i></button>
-			                        </form>
-								</div>
 								<div class="single-sidebar-widget user-info-widget">
-									<img src={{$user->avatar_url}} alt="">
-									<a href="#"><h4>{{$user->name}}</h4></a>
+									<img style="width: 120px;height: 120px;border-radius: 50%;"
+										 v-if="user && user.avatar_url != null" 
+										 :src="user.avatar_url" alt="">
+									<img v-else style="width: 120px;height: 120px;border-radius: 50%;" src="/images/user/no-avatar-user.png" alt="Default avatar">
+									<a><h4>@{{user.name}}</h4></a>
 									<p>
-										Senior blog writer
+										@{{user.role.name}}
 									</p>
 									<ul class="social-links">
 										<li><a href="#"><i class="fa fa-facebook"></i></a></li>
@@ -103,8 +83,8 @@
 										<li><a href="#"><i class="fa fa-github"></i></a></li>
 										<li><a href="#"><i class="fa fa-behance"></i></a></li>
 									</ul>
-									<p>
-									    {{$user->biography}}
+									<p v-if="user.biography != null">
+										@{{user.biography}}
 									</p>
 								</div>
 							</div>
@@ -137,7 +117,6 @@
 			axios.get(`/api/users/${com.user_id}`)
             .then(function (response) {
 				var user = response.data;
-				user.posts.map(post => post.short_content = post.description);
                 com.user = user;
             })
             .catch(function (error) {

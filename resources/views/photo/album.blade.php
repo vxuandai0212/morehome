@@ -83,29 +83,48 @@
             <div class="animated fadeIn">
                 <div class="card">
                     <div class="card-header">
-                        <el-select v-model="formInline.region">
-                            <el-option label="All photos" value="all"></el-option>
-                            <el-option label="Interior Design" value="interior design"></el-option>
-                        </el-select>
-                        <el-button type="primary" @click="dialogAddVisible = true">Add Image</el-button>
+                        <el-button type="primary" @click="openAdd">Add Image</el-button>
                     </div>
                     <div class="card-body">
-                        <el-form :inline="true" :model="formInline" class="demo-form-inline">
+                        <el-form :inline="true" :model="form_search" class="demo-form-inline">
                             <el-form-item label="Title">
-                                <el-input v-model="formInline.user" placeholder="Enter Title"></el-input>
+                                <el-input v-model="form_search.name" placeholder="Enter Title"></el-input>
                             </el-form-item>
                             <el-form-item label="Category">
-                                <el-input v-model="formInline.user" placeholder="Enter Category"></el-input>
+                                <el-select
+                                    v-model="form_search.categories_id"
+                                    multiple
+                                    filterable
+                                    allow-create
+                                    default-first-option
+                                    placeholder="Choose categories">
+                                    <el-option
+                                        v-for="category in categories"
+                                        :key="category.id"
+                                        :label="category.name"
+                                        :value="category.id">
+                                    </el-option>
+                                </el-select>
                             </el-form-item>
                             <el-form-item label="Tag">
-                                <el-select v-model="formInline.user" placeholder="Enter Tag">
-                                    <el-option label="Authorized" value="authorized"></el-option>
-                                    <el-option label="Unauthorized" value="unauthorized"></el-option>
+                                <el-select
+                                    v-model="form_search.tags_id"
+                                    multiple
+                                    filterable
+                                    allow-create
+                                    default-first-option
+                                    placeholder="Choose tags">
+                                    <el-option
+                                        v-for="tag in tags"
+                                        :key="tag.id"
+                                        :label="tag.name"
+                                        :value="tag.id">
+                                    </el-option>
                                 </el-select>
                             </el-form-item>
                             <el-form-item>
-                                <el-button type="primary">Search</el-button>
-                                <el-button type="default">Clear</el-button>
+                                <el-button @click="search" type="primary">Search</el-button>
+                                <el-button @click="clear" type="default">Clear</el-button>
                             </el-form-item>
                         </el-form>
                         <hr>
@@ -201,7 +220,9 @@
                                         </el-select>
                                     </el-form-item>
                                     <el-form-item label="Status:">
-                                        <el-select v-model="form_photo.status">
+                                        <el-select 
+                                            v-model="form_photo.status"
+                                            placeholder="Select status">
                                             <el-option label="Active" value="1"></el-option>
                                             <el-option label="Disable" value="0"></el-option>
                                         </el-select>
@@ -330,12 +351,15 @@
                 categories: []
             },
             image: '',
-            formInline: {
-                region: null,
+            form_search: {
+                name: '',
+                categories_id: [],
+                tags_id: []
             },
             dialogViewVisible: false,
             dialogAddVisible: false,
             dialogEditVisible: false,
+            current_page: 1,
             page_size: 10,
             total: null,
             view_image: '',
@@ -376,28 +400,40 @@
       },
       methods: {
         indexMethod(index) {
-            return index * 2;
+            return parseInt(index) + 1 + this.page_size * (this.current_page - 1);
         },
         handleSizeChange(val) {
-            console.log(`${val} items per page`);
+            this.page_size = val;
+            this.table_change();
         },
         handleCurrentChange(val) {
-            console.log(`current page: ${val}`);
+            this.current_page = val;
+            this.table_change();
         },
         table_change() {
             var com = this;
-            axios.get('/api/photos', {params: {limit: 10, offset: 0, album_id: com.form_photo.album_id}})
+            axios.get('/api/photos', {params: {
+                album_id: com.form_photo.album_id,
+                limit: com.page_size, 
+                offset: com.page_size * (com.current_page - 1), 
+                name: com.form_search.name,
+                categories_id: com.form_search.categories_id,
+                tags_id: com.form_search.tags_id
+            }})
             .then(function (response) {
-                // console.log(response.data[0]);
                 var photos = response.data[0];
                 photos = photos.map(function(photo) {
+                    photo.categories_id = [];
+                    photo.tags_id = [];
                     photo.categories = photo.categories.map(function(category) {
+                        photo.categories_id.push(category.id);
                         return category.name;
                     }).join(", ");
                     photo.tags = photo.tags.map(function(tag) {
+                        photo.tags_id.push(tag.id);
                         return tag.name;
                     }).join(", ");
-                    return photo
+                    return photo;
                 })
                 com.album.photos = photos;
                 com.total = response.data[1];
@@ -441,7 +477,36 @@
             };
             reader.readAsDataURL(file);
         },
+        openAdd() {
+            $('#imagePreview').css('background-image', 'url(/images/album/default.png)');
+            this.form_photo.name = "";
+            this.form_photo.status = null;
+            this.form_photo.tags = [];
+            this.form_photo.categories = [];
+            this.dialogAddVisible = true;
+        },
         addPhoto() {
+            if (this.image === '') {
+                return this.$notify({
+                    title: 'Warning',
+                    message: 'Photo is required',
+                    type: 'warning'
+                });
+            }
+            if (this.form_photo.name.trim() === '') {
+                return this.$notify({
+                    title: 'Warning',
+                    message: 'Name is required',
+                    type: 'warning'
+                });
+            }
+            if (this.form_photo.status === null) {
+                return this.$notify({
+                    title: 'Warning',
+                    message: 'Status is required',
+                    type: 'warning'
+                });
+            }
             var com = this;
             com.disable_add_button = true;
             axios.post('/api/photos', {photo: com.form_photo, image: com.image})
@@ -467,8 +532,8 @@
             this.dialogEditVisible = true;
             this.edit_photo.name = row.name;
             this.edit_photo.status = row.status;
-            this.edit_photo.categories = row.categories.split(", ");
-            this.edit_photo.tags = row.tags.split(", ");
+            this.edit_photo.categories = row.categories_id;
+            this.edit_photo.tags = row.tags_id;
             this.edit_photo.image_url = row.image_url;
             this.edit_photo.id = row.id;
         },
@@ -520,6 +585,30 @@
                     swal("Your image is safe!");
                 }
             });
+        },
+        clear() {
+            this.current_page = 1;
+            this.page_size = 10;
+            this.form_search.name = '';
+            this.form_search.categories_id = [];
+            this.form_search.tags_id = [];
+            this.table_change();
+        },
+        search() {
+            if (this.form_search.name.trim() === '' &&
+                this.form_search.categories_id.length === 0 &&
+                this.form_search.tags_id.length === 0
+            ) {
+                return this.$notify({
+                    title: 'Warning',
+                    message: 'Vui lòng điền điều kiện tìm kiếm.',
+                    type: 'warning'
+                });
+            }
+            
+            this.current_page = 1;
+            this.page_size = 10;
+            this.table_change();
         }
       }
     })

@@ -21,33 +21,32 @@
             <div class="animated fadeIn">
                 <div class="card">
                     <div class="card-header">
-                        <el-button type="primary" @click="go_manage_role()">Manage Role</el-button>
                         <el-button type="primary" @click="go_add_user()">Add User</el-button>
                     </div>
                     <div class="card-body">
-                        <el-form :inline="true" :model="formInline" class="demo-form-inline">
+                        <el-form :inline="true" :model="form_search" class="demo-form-inline">
                             <el-form-item label="Name">
-                                <el-input v-model="formInline.user" placeholder="Name"></el-input>
+                                <el-input v-model="form_search.name" placeholder="Name"></el-input>
                             </el-form-item>
                             <el-form-item label="Username">
-                                <el-input v-model="formInline.user" placeholder="Username"></el-input>
+                                <el-input v-model="form_search.username" placeholder="Username"></el-input>
                             </el-form-item>
                             <el-form-item label="Role">
-                                <el-select v-model="formInline.region" placeholder="Role">
-                                    <el-option label="Superadmin" value="superadmin"></el-option>
-                                    <el-option label="Admin" value="admin"></el-option>
-                                    <el-option label="Subcriber" value="subcriber"></el-option>
+                                <el-select v-model="form_search.role" placeholder="Role">
+                                    <el-option label="Superadmin" value="1"></el-option>
+                                    <el-option label="Admin" value="2"></el-option>
+                                    <el-option label="Subcriber" value="3"></el-option>
                                 </el-select>
                             </el-form-item>
                             <el-form-item label="Status">
-                                <el-select v-model="formInline.region" placeholder="Status">
-                                    <el-option label="Authorized" value="authorized"></el-option>
-                                    <el-option label="Unauthorized" value="unauthorized"></el-option>
+                                <el-select v-model="form_search.status" placeholder="Status">
+                                    <el-option label="Authorized" value="1"></el-option>
+                                    <el-option label="Unauthorized" value="0"></el-option>
                                 </el-select>
                             </el-form-item>
                             <el-form-item>
-                                <el-button type="primary">Search</el-button>
-                                <el-button type="default">Clear</el-button>
+                                <el-button @click="search" type="primary">Search</el-button>
+                                <el-button @click="clear" type="default">Clear</el-button>
                             </el-form-item>
                         </el-form>
                         <hr>
@@ -55,7 +54,7 @@
                             <el-table-column type="index" :index="indexMethod" width="50" align="center"></el-table-column>
                             <el-table-column prop="name" label="Name"></el-table-column>
                             <el-table-column prop="username" label="Username"></el-table-column>
-                            <el-table-column prop="role.name" label="Role" width="120" align="center"></el-table-column>
+                            <el-table-column prop="role_name" label="Role" width="120" align="center"></el-table-column>
                             <el-table-column prop="activities_log" label="Activities log" width="120" align="center">
                                 <template slot-scope="scope">
                                     <el-button
@@ -113,9 +112,11 @@
       data: function() {
         return {
             users: [],
-            formInline: {
-                user: '',
-                region: ''
+            form_search: {
+                name: '',
+                username: '',
+                role: null,
+                status: null
             },
             current_page: 1,
             page_size: 10,
@@ -124,7 +125,7 @@
       },
       methods: {
         indexMethod(index) {
-            return parseInt(index) + 1;
+            return parseInt(index) + 1 + this.page_size * (this.current_page - 1);
         },
         handleSizeChange(val) {
             this.page_size = val;
@@ -136,9 +137,20 @@
         },
         table_change() {
             var com = this;
-            axios.get('api/users', {params: {limit: com.page_size, offset: com.page_size * (com.current_page - 1)}})
+            axios.get('api/users', {params: {
+                limit: com.page_size, 
+                offset: com.page_size * (com.current_page - 1), 
+                name: com.form_search.name,
+                username: com.form_search.username,
+                role_id: com.form_search.role,
+                status: com.form_search.status
+            }})
             .then(function (response) {
-                com.users = response.data[0];
+                var users = response.data[0];
+                com.users = users.map(function(user) {
+                    user.status = user.status === 1 ? 'Authorized' : 'Unauthorized';
+                    return user;
+                });
                 com.total = response.data[1];
             })
             .catch(function (error) {
@@ -154,11 +166,34 @@
         editUserProfile(index, row) {
             window.location.href = `/users/profiles/${row.slug}/edit`;
         },
-        go_manage_role() {
-            window.location.href = `/users/manage-role`;
-        },
         go_add_user() {
             window.location.href = `/users/add`;
+        },
+        clear() {
+            this.current_page = 1;
+            this.page_size = 10;
+            this.form_search.name = '';
+            this.form_search.username = '';
+            this.form_search.role = null;
+            this.form_search.status = null;
+            this.table_change();
+        },
+        search() {
+            if (this.form_search.name.trim() === '' &&
+                this.form_search.username.trim() === '' &&
+                this.form_search.role === null &&
+                this.form_search.status === null
+            ) {
+                return this.$notify({
+                    title: 'Warning',
+                    message: 'Vui lòng điền điều kiện tìm kiếm.',
+                    type: 'warning'
+                });
+            }
+            
+            this.current_page = 1;
+            this.page_size = 10;
+            this.table_change();
         }
       }
     })

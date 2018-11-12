@@ -13,7 +13,7 @@
 @endsection
 
 @section('title')
-<title>Interior</title>
+<title>Giới thiệu</title>
 @endsection
 
 @section('css')
@@ -52,9 +52,9 @@
 					<div class="row d-flex align-items-center justify-content-center">
 						<div class="about-content col-lg-12">
 							<h1 class="text-white">
-								About Us				
+								Giới thiệu				
 							</h1>	
-							<p class="text-white link-nav"><a href="{{route('home')}}">Home </a>  <span class="lnr lnr-arrow-right"></span>  <a href="{{route('about')}}"> About Us</a></p>
+							<p class="text-white link-nav"><a href="{{route('home')}}">Trang chủ </a>  <span class="lnr lnr-arrow-right"></span>  <a href="{{route('about')}}"> Giới thiệu</a></p>
 						</div>	
 					</div>
 				</div>
@@ -113,7 +113,7 @@
 					<div class="row">
 						<div class="col-lg-6 col-md-6">
 							<div class="single-feature">
-								<a href="#" class="title d-flex justify-content-center">
+								<a href="/projects?tag=Thiết kế nội thất" class="title d-flex justify-content-center">
 									<span class="lnr lnr-pencil"></span>
 									<h4 class="vietnamese">Thiết kế nội thất</h4>
 								</a>
@@ -121,15 +121,15 @@
 						</div>
 						<div class="col-lg-6 col-md-6">
 							<div class="single-feature">
-								<a href="#" class="title d-flex justify-content-center">
+								<a href="/ideabooks?tag=Thiết kế nhà đẹp" class="title d-flex justify-content-center">
 									<span class="lnr lnr-home"></span>
-									<h4 class="vietnamese">Thiết kế kiến trúc</h4>
+									<h4 class="vietnamese">Thiết kế nhà đẹp</h4>
 								</a>
 							</div>
 						</div>
 						<div class="col-lg-6 col-md-6">
 							<div class="single-feature">
-								<a href="#" class="title d-flex justify-content-center">
+								<a href="/ideabooks?tag=Thi công nội thất" class="title d-flex justify-content-center">
 									<span class="lnr lnr-funnel"></span>
 									<h4 class="vietnamese">Thi công nội thất</h4>
 								</a>
@@ -137,7 +137,7 @@
 						</div>						
 						<div class="col-lg-6 col-md-6">
 							<div class="single-feature">
-								<a href="#" class="title d-flex justify-content-center">
+								<a href="/ideabooks?tag=Sản xuất nội thất" class="title d-flex justify-content-center">
 									<span class="lnr lnr-inbox"></span>
 									<h4 class="vietnamese">Sản xuất nội thất</h4>
 								</a>

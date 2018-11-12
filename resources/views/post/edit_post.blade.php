@@ -74,7 +74,7 @@
             <div class="page-header float-left">
                 <div class="page-title">
                     <ol class="breadcrumb text-right">
-                        <li><a href="#">Manage Posts</a></li>
+                        <li><a href="{{route('admin.post')}}">Manage Posts</a></li>
                         <li class="active">{{$post->name}}</li>
                     </ol>
                 </div>
@@ -124,49 +124,10 @@
                                     <el-input type="textarea"></el-input>
                                 </el-form-item>
                             </div>
-                            <!-- <el-form-item label="Tags">
-                                <el-select
-                                    v-model="post.tags"
-                                    multiple
-                                    filterable
-                                    allow-create
-                                    default-first-option
-                                    placeholder="Choose tags for your article"
-                                    style="width: 50%;">
-                                    <el-option
-                                    v-for="item in tags"
-                                    :key="item.id"
-                                    :label="item.name"
-                                    :value="item.id"
-                                    >
-                                    </el-option>
-                                </el-select>
-                            </el-form-item> -->
-                            <!-- <el-form-item label="Category">
-                                <el-select v-model="post.category" placeholder="Choose category">
-                                    <el-option label="TƯ VẤN" value="ideabooks"></el-option>
-                                    <el-option label="DỰ ÁN" value="projects"></el-option>
-                                    <el-option label="DỊCH VỤ" value="services"></el-option>
-                                </el-select>
-                            </el-form-item> -->
                             <div class="row">
                                 <div class="col-md-6 float-left">
                                     <el-form-item label="Display in Menu">
                                         <el-switch v-model="post.display_in_menu"></el-switch>
-                                    </el-form-item>
-                                </div>
-                                <div class="col-md-6 float-right">
-                                    <el-form-item label="Enable Scheduling">
-                                        <el-switch v-model="has_schedule"></el-switch>
-                                        <template v-if="has_schedule">
-                                            <el-date-picker
-                                                format="dd/MM/yyyy HH:mm:ss"
-                                                value-format="timestamp"
-                                                v-model="post.scheduling_post"
-                                                type="datetime"
-                                                placeholder="Select date and time">
-                                            </el-date-picker>
-                                        </template>
                                     </el-form-item>
                                 </div>
                             </div>

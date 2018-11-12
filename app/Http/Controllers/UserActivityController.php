@@ -8,6 +8,16 @@ use Illuminate\Support\Facades\Auth;
 
 class UserActivityController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
     public function likes(Request $request)
     {
         $like = ActivityLog::create([

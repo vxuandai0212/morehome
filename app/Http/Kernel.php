@@ -62,6 +62,9 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'post_view' => \App\Http\Middleware\PostViewTime::class,
+        'check_admin' => \App\Http\Middleware\CheckRoleAdmin::class,
+        'check_superadmin' => \App\Http\Middleware\CheckRoleSuperadmin::class,
+        'comment_count' => \App\Http\Middleware\CheckCommentCount::class,
     ];
 
     /**
