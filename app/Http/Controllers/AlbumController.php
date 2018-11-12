@@ -10,6 +10,16 @@ use Carbon\Carbon;
 class AlbumController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth')->except(['index', 'show']);;
+    }
+    
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -18,8 +28,33 @@ class AlbumController extends Controller
     {
         $limit = $request->limit;
         $offset = $request->offset;
-        $total = Album::all()->count();
-        $albums = Album::all()->slice($offset)->take($limit);
+        $name = $request->name;
+        $author = $request->author;
+        $status = $request->status;
+
+        $matches = array();
+        if ($name) {
+            $matches["name"] = $name;
+        }
+        if ($author) {
+            $matches["created_by"] = $author;
+        }
+        if ($status != null) {
+            $matches["status"] = $status;
+        }
+        
+        $albums = Album::where($matches)
+        ->orderBy('created_at', 'desc')
+        ->when(Auth::check() && Auth::user()->role_id == 2, function ($query) {
+            return $query->where('created_by', Auth::user()->username);
+        })
+        ->customPaginate($limit, $offset)->get();
+        $total = Album::where($matches)
+        ->when(Auth::check() && Auth::user()->role_id == 2, function ($query) {
+            return $query->where('created_by', Auth::user()->username);
+        })
+        ->count();
+
         $albums = $albums->map(function ($album) {
             $album->created_at_carbon = $album->created_at->diffForHumans();
             if ($album->status == 1) {
@@ -53,7 +88,8 @@ class AlbumController extends Controller
     {
         $author = Auth::user()->username;
         $name = $request->name;
-        $album = Album::create(['name' => $name, 'created_by' => $author]);
+        $post_id = $request->post_id;
+        $album = Album::create(['name' => $name, 'created_by' => $author, 'post_id' => $post_id]);
 
         return response()->json($album, 201);
     }
@@ -93,6 +129,7 @@ class AlbumController extends Controller
         $album = Album::find($id);
         $album->name = $request->title;
         $album->status = $request->status;
+        $album->post_id = $request->post_id;
         $album->save();
 
         return response()->json($album, 200);

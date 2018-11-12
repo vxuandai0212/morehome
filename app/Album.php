@@ -14,6 +14,7 @@ class Album extends Model
         'view_count', 
         'status',
         'created_by',
+        'post_id',
         'slug'
     ];
 
@@ -29,5 +30,14 @@ class Album extends Model
                 'source' => 'name'
             ]
         ];
+    }
+
+    public function scopeCustomPaginate($query, $limit, $offset)
+    {
+        if ($offset != 0) {
+            return $query->skip($offset)->take($limit);
+        } else {
+            return $query->take($limit);
+        }
     }
 }

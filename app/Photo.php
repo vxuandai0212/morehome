@@ -29,4 +29,13 @@ class Photo extends Model
     {
         return $this->morphToMany('App\Tag', 'taggable');
     }
+
+    public function scopeCustomPaginate($query, $limit, $offset)
+    {
+        if ($offset != 0) {
+            return $query->skip($offset)->take($limit);
+        } else {
+            return $query->take($limit);
+        }
+    }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Album;
 use App\Post;
+use App\User;
 
 class HomeController extends Controller
 {
@@ -37,13 +38,15 @@ class HomeController extends Controller
     public function profiles(Request $request)
     {
         $user_slug = $request->user_slug;
-        return view('user.user_profile', ['user_slug' => $user_slug]);
+        $user = User::where('slug', $user_slug)->first();
+        return view('user.user_profile', ['user_id' => $user->id, 'user_slug' => $user_slug]);
     }
 
     public function profiles_edit(Request $request)
     {
         $user_slug = $request->user_slug;
-        return view('user.user_profile_edit', ['method' => 'edit', 'user_slug' => $user_slug]);
+        $user = User::where('slug', $user_slug)->first();
+        return view('user.user_profile_edit', ['user_id' => $user->id, 'method' => 'edit', 'user_slug' => $user_slug]);
     }
 
     public function add()

@@ -164,9 +164,9 @@
       el: '#app',
       mounted: function() {
         var com = this;
-        axios.get(`/api/users/${com.user_slug}`)
+        axios.get(`/api/users/${com.user_id}`)
         .then(function (response) {
-            var user = response.data[0];
+            var user = response.data;
             user.status == 1 ? user.status = true : user.status = false;
             if (user.role_id == 1) {
                 user.role_id = 'Superadmin';
@@ -184,6 +184,7 @@
       data: function() {
         return {
             user: {},
+            user_id: {{$user_id}},
             user_slug: `{{$user_slug}}`
         }
       },

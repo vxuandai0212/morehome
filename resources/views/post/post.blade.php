@@ -20,23 +20,23 @@
                         <el-button type="primary" @click="go_write_post">Write Post</el-button>
                     </div>
                     <div class="card-body">
-                        <el-form :inline="true" :model="formInline" class="demo-form-inline">
+                        <el-form :inline="true" :model="form_search" class="demo-form-inline">
                             <el-form-item label="Name">
-                                <el-input v-model="formInline.user" placeholder="Article name"></el-input>
+                                <el-input v-model="form_search.name" placeholder="Article name"></el-input>
                             </el-form-item>
                             <el-form-item label="Author">
-                                <el-input v-model="formInline.user" placeholder="Author"></el-input>
+                                <el-input v-model="form_search.author" placeholder="Author"></el-input>
                             </el-form-item>
                             <el-form-item label="Category">
-                                <el-select v-model="formInline.region" placeholder="Article category">
-                                    <el-option label="Decoration" value="authorized"></el-option>
-                                    <el-option label="Design" value="authorized"></el-option>
-                                    <el-option label="Construction" value="unauthorized"></el-option>
+                                <el-select v-model="form_search.category" placeholder="Article category">
+                                    <el-option label="TƯ VẤN" value="ideabooks"></el-option>
+                                    <el-option label="DỊCH VỤ" value="services"></el-option>
+                                    <el-option label="DỰ ÁN" value="projects"></el-option>
                                 </el-select>
                             </el-form-item>
                             <el-form-item>
-                                <el-button type="primary">Search</el-button>
-                                <el-button type="default">Clear</el-button>
+                                <el-button @click="search" type="primary">Search</el-button>
+                                <el-button @click="clear" type="default">Clear</el-button>
                             </el-form-item>
                         </el-form>
                         <hr>
@@ -102,15 +102,16 @@
             current_page: 1,
             page_size: 10,
             total: null,
-            formInline: {
-                user: '',
-                region: ''
+            form_search: {
+                name: '',
+                author: '',
+                category: null
             },
         }
       },
       methods: {
         indexMethod(index) {
-            return parseInt(index) + 1;
+            return parseInt(index) + 1 + this.page_size * (this.current_page - 1);
         },
         handleSizeChange(val) {
             this.page_size = val;
@@ -122,7 +123,13 @@
         },
         table_change() {
             var com = this;
-            axios.get('api/posts', {params: {limit: com.page_size, offset: com.page_size * (com.current_page - 1)}})
+            axios.get('api/posts', {params: {
+                limit: com.page_size, 
+                offset: com.page_size * (com.current_page - 1), 
+                name: com.form_search.name,
+                author: com.form_search.author,
+                category: com.form_search.category
+            }})
             .then(function (response) {
                 com.posts = response.data[0];
                 com.total = response.data[1];
@@ -139,6 +146,30 @@
         },
         go_write_post() {
             window.location.href = '/posts/add';
+        },
+        clear() {
+            this.current_page = 1;
+            this.page_size = 10;
+            this.form_search.name = '';
+            this.form_search.author = '';
+            this.form_search.category = null;
+            this.table_change();
+        },
+        search() {
+            if (this.form_search.name.trim() === '' &&
+                this.form_search.author.trim() === '' &&
+                this.form_search.category === null
+            ) {
+                return this.$notify({
+                    title: 'Warning',
+                    message: 'Vui lòng điền điều kiện tìm kiếm.',
+                    type: 'warning'
+                });
+            }
+            
+            this.current_page = 1;
+            this.page_size = 10;
+            this.table_change();
         }
       }
     })

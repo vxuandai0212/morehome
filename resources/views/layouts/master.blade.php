@@ -40,9 +40,11 @@
                         <a href="{{ route('admin.dashboard') }}"> <i class="menu-icon fa fa-dashboard"></i>Dashboard </a>
                     </li>
                     <h3 class="menu-title">Morehome</h3><!-- /.menu-title -->
+                    @if (Auth::check() && Auth::user()->role_id === 1)
                     <li class="menu-item-has-children">
                         <a href="{{ route('admin.user') }}"> <i class="menu-icon fa fa-users"></i>User</a>
                     </li>
+                    @endif
                     <li class="menu-item-has-children">
                         <a href="{{ route('admin.post') }}"> <i class="menu-icon fa fa-file-text"></i>Post</a>
                     </li>

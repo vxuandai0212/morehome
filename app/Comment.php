@@ -15,7 +15,7 @@ class Comment extends Model
 
     public function posts()
     {
-        return $this->belongsToMany('App\Post', 'activity_logs');
+        return $this->belongsToMany('App\Post', 'activity_logs')->wherePivot('action_type_id', 10);
     }
 
     public function users()
@@ -26,5 +26,14 @@ class Comment extends Model
     public function replies()
     {
         return $this->hasMany('App\Comment', 'parent_comment_id');
+    }
+
+    public function scopeCustomPaginate($query, $limit, $offset)
+    {
+        if ($offset != 0) {
+            return $query->skip($offset)->take($limit);
+        } else {
+            return $query->take($limit);
+        }
     }
 }

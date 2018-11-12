@@ -10,8 +10,9 @@
 <style>
 .note-editor.note-frame .note-editing-area .note-editable {
     width: 85%;
+    padding: 20px;
     margin: auto;
-    overflow: visible!important;
+    overflow-y: scroll;
 }
 .avatar-upload {
   position: relative;
@@ -91,7 +92,7 @@
                 <div class="card">
                     <div class="card-body">
                         <el-form ref="form" :model="form" label-width="120px">
-                            <el-form-item label="Name*">
+                            <el-form-item label="Name">
                                 <el-input v-model="form.name"></el-input>
                             </el-form-item>
                             <el-form-item label="Title">
@@ -141,7 +142,6 @@
                                 <el-select v-model="form.category" placeholder="Choose category">
                                     <el-option label="TƯ VẤN" value="ideabooks"></el-option>
                                     <el-option label="DỰ ÁN" value="projects"></el-option>
-                                    <el-option label="DỊCH VỤ" value="services"></el-option>
                                 </el-select>
                             </el-form-item>
                             <el-form-item label="Display in Menu">
@@ -155,14 +155,15 @@
                                         format="dd/MM/yyyy HH:mm:ss"
                                         v-model="form.time_schedule"
                                         type="datetime"
+                                        value-format="timestamp"
                                         placeholder="Select date and time">
                                     </el-date-picker>
                                 </template>
                             </el-form-item>
                             <el-form-item label="Template">
                                 <el-select v-model="form.template" placeholder="Choose template">
-                                    <el-option label="Project" value="project"></el-option>
-                                    <el-option label="Advice" value="advice"></el-option>
+                                    <el-option label="Dự án" value="project"></el-option>
+                                    <el-option label="Tư vấn" value="advice"></el-option>
                                 </el-select>
                             </el-form-item>
                             <el-form-item label="Status:">
@@ -249,12 +250,75 @@
                     type: 'warning'
                 });
             }
+            if (this.form.title.trim() === '') {
+                return this.$notify({
+                    title: 'Warning',
+                    message: 'Title is required',
+                    type: 'warning'
+                });
+            }
+            if (this.form.desc.trim() === '') {
+                return this.$notify({
+                    title: 'Warning',
+                    message: 'Description is required',
+                    type: 'warning'
+                });
+            }
+            if (this.form.keywords.trim() === '') {
+                return this.$notify({
+                    title: 'Warning',
+                    message: 'Keywords is required',
+                    type: 'warning'
+                });
+            }
+            if (this.image === '/images/album/default.png') {
+                return this.$notify({
+                    title: 'Warning',
+                    message: 'Thumbnail is required',
+                    type: 'warning'
+                });
+            }
+            if (this.image === '/images/album/default.png') {
+                return this.$notify({
+                    title: 'Warning',
+                    message: 'Thumbnail is required',
+                    type: 'warning'
+                });
+            }
+            if (this.form.tags.length === 0) {
+                return this.$notify({
+                    title: 'Warning',
+                    message: 'Post need at least one tag',
+                    type: 'warning'
+                });
+            }
+            if (this.form.category === '') {
+                return this.$notify({
+                    title: 'Warning',
+                    message: 'Category is required',
+                    type: 'warning'
+                });
+            }
+            if (this.form.template === '') {
+                return this.$notify({
+                    title: 'Warning',
+                    message: 'Template is required',
+                    type: 'warning'
+                });
+            }
             var markup = $('#summernote_wrapper textarea').summernote('code');
             var text_content = markup.replace(/<(?:.|\n)*?>/gm, '');
             var short_content = text_content.slice(0, 255);
             $('#summernote_wrapper textarea').summernote('destroy');
             $('#summernote_wrapper textarea').summernote({focus: true});
             this.form.content = markup;
+            if (this.form.content === '') {
+                return this.$notify({
+                    title: 'Warning',
+                    message: 'Content is required',
+                    type: 'warning'
+                });
+            }
             this.form.text_content = text_content;
             this.form.short_content = short_content;
             this.form.image = this.image;
@@ -280,6 +344,8 @@
                     title: 'Error',
                     message: error
                 });
+                com.publishing = false;
+                com.form.page_status = 'Visible';
             });
         },
         back() {

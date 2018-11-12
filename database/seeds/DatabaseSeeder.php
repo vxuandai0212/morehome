@@ -1,9 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Module;
 use App\Role;
-use App\Permission;
 use App\User;
 use App\Category;
 use App\Tag;
@@ -26,8 +24,6 @@ class DatabaseSeeder extends Seeder
         User::truncate();
         Tag::truncate();
         Role::truncate();
-        Permission::truncate();
-        Module::truncate();
         Category::truncate();
         Album::truncate();
         ActionType::truncate();
@@ -37,9 +33,7 @@ class DatabaseSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $this->call([
-            ModulesTableSeeder::class,
             RolesTableSeeder::class,
-            PermissionsTableSeeder::class,
             UsersTableSeeder::class,
             CategoriesTableSeeder::class,
             TagsTableSeeder::class,

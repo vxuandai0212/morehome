@@ -23,7 +23,7 @@ class CreatePostsTable extends Migration
             $table->text('keywords');
             $table->char('category', 50);
             $table->boolean('display_in_menu')->default(1);
-            $table->double('scheduling_post');
+            $table->double('scheduling_post')->default(0);
             $table->char('template_url', 100);
             $table->char('view_url', 100);
             $table->char('edit_url', 100);
